@@ -1,0 +1,33 @@
+###########################
+# UaModeler Project File  #
+# Generated at 12.07.2023 #
+###########################
+
+PROJECTNAME = PackMLModel
+
+TEMPLATESET = ($TEMPLATES)/net/v3_3/t0/net_server.tt2set
+
+MODELS += ($MODELS)/Opc.Ua.NodeSet2.ua \
+    packmlmodel.ua
+
+VARIABLES+= packmlmodel.ua: Namespace=PackMLStateMachine; Organization=FIP; 
+
+COLORS = ($MODELS)/Opc.Ua.NodeSet2.ua: #0000ff\
+    packmlmodel.ua: #008000
+
+PROJECTVARIABLES += GenerateDefaultApplication = true \
+    GeneratePackagesConfig = true \
+    NetFramework = 4.8 \
+    ProjectNamespace = PackMLModel \
+    ProjectOrganization = FIP
+
+OUTPUTPATH = 
+
+GENERATE += packmlmodel.ua
+
+NODEACCESSINFOROLES += Administrator \
+    SecurityAdmin \
+    ConfigurationAdmin \
+    Operator \
+    Observer
+

@@ -1,0 +1,2267 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnifiedAutomation.UaBase.Windows</name>
+    </assembly>
+    <members>
+        <member name="T:UnifiedAutomation.UaBase.ApplicationInstance">
+            \ingroup GroupNet_UaBaseLibs
+            <summary>
+            Represents an instance of a UA application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.#ctor">
+            <remarks/>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.CommandLine">
+            <summary>
+            Gets the command line parameters passed to the process.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.ParseCommandLine(System.Boolean)">
+            <summary>
+            Parses the command line.
+            </summary>
+            <param name="ignoreUnknownArguments">if set to <c>true</c> unknown arguments are ignored.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.ParseCommandLine(System.Boolean,System.String[])">
+            <summary>
+            Parses the command line.
+            </summary>
+            <param name="ignoreUnknownArguments">if set to <c>true</c> unknown arguments are ignored.</param>
+            <param name="args">The arguments passed on the command line.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.ValidateArguments(System.Boolean,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Validates the arguments.
+            </summary>
+            <param name="ignoreUnknownArguments">if set to <c>true</c> unknown arguments are ignored.</param>
+            <param name="args">The arguments passed on the command line.</param>
+            <returns>Returns an error string. Null if no error occurs.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.GetCommandDescriptions">
+            <summary>
+            Gets the descriptions for the supported command line arguments.
+            </summary>
+            <returns>A list of descriptions for the supported command line arguments.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.GetHelpString(UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription[])">
+            <summary>
+            Gets the help string  for the command line parameters.
+            </summary>
+            <param name="commands">The descriptions for the supported arguments.</param>
+            <returns>Formatted help text that can be displayed in a console.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.ProcessCommand(System.Boolean,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Processes the command.
+            </summary>
+            <param name="silent">if set to <c>true</c> no dialogs such be displayed.</param>
+            <param name="args">Additional arguments provided on the command line.</param>
+            <returns>True if the command was processed.</returns>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription">
+            <summary>
+            Stores the description of a command.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription.Name">
+            <summary>
+            The argument name.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription.Description">
+            <summary>
+            The argument description.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription.ValueRequired">
+            <summary>
+            Whether the argument requires a value.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription.ValueAllowed">
+            <summary>
+            Whether the argument allows a value.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription.#ctor(System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.ApplicationInstance.CommandDescription"/> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="valueRequired">if set to <c>true</c> a value is required.</param>
+            <param name="valueAllowed">if set to <c>true</c> a value is allowed.</param>
+            <param name="description">The description.</param>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands">
+            <summary>
+            The built-in command line parameters.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.Service">
+            <summary>
+            Runs the application as a service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.Install">
+            <summary>
+            Installs the application.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.Uninstall">
+            <summary>
+            Uninstalls the application.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.Silent">
+            <summary>
+            Suppresses any errors during command processing.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.ConfigFile">
+            <summary>
+            The path to the configuration file to use.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.OpcTcpPort">
+            <summary>
+            The OPC.TCP port to use.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.ApplicationCertificateStore">
+            <summary>
+            The OPC.TCP port to use.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ApplicationInstance.BuiltInCommands.Help">
+            <summary>
+            Display the command line help text for the application.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.Default">
+            <summary>
+            Gets the default ApplicationInstanceBase for the process.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.NoAutoStartService">
+            <summary>
+            Gets or sets a value indicating whether a Windows service should be automatically started if the EXE was started by a non-interactive user.
+            </summary>
+            <value>
+            <c>true</c> if a Windows service should NOT be automatically started if the EXE was started by a non-interactive user; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.ApplicationInstance.DisableCommandLineProcessing">
+            <summary>
+            Gets or sets a value indicating whether that the SDK should NOT attempt to interpret the command line when it is initialize.
+            </summary>
+            <value>
+            <c>true</c> if the SDK should NOT attempt to interpret command line options; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.Start(UnifiedAutomation.UaBase.ServerBase,System.Threading.WaitCallback,System.Object,System.Boolean)">
+            <summary>
+            Starts the application.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="callback">The method to call when initialization is complete.</param>
+            <param name="userData">The user data to be passed to the callback.</param>
+            <param name="silent"></param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.StartWindowsService(UnifiedAutomation.UaBase.ServerBase,UnifiedAutomation.UaBase.ApplicationInstanceBase,System.Threading.WaitCallback,System.Object)">
+            <summary>
+            Starts a new instance of the <see cref="T:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService"/> class as a service.
+            To add more service features like OnSessionChange events,
+            create new classes which inherit from <see cref="T:UnifiedAutomation.UaBase.ApplicationInstance"/> and the nested <see cref="T:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService"/> class.
+            Override the <see cref="M:UnifiedAutomation.UaBase.ApplicationInstance.StartWindowsService(UnifiedAutomation.UaBase.ServerBase,UnifiedAutomation.UaBase.ApplicationInstanceBase,System.Threading.WaitCallback,System.Object)"/> method which will be started within <see cref="M:UnifiedAutomation.UaBase.ApplicationInstance.Start(UnifiedAutomation.UaBase.ServerBase,System.Threading.WaitCallback,System.Object,System.Boolean)"/>,
+            and call <see cref="M:System.ServiceProcess.ServiceBase.Run(System.ServiceProcess.ServiceBase)"/> with your new WindowsService class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="application">The application.</param>
+            <param name="callback">The callback.</param>
+            <param name="userData">The user data.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.ApplicationInDemoMode(UnifiedAutomation.UaBase.ApplicationLicense)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.CreateDefaultSecurityProvider">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.LoadConfiguration(System.Boolean,System.Boolean)">
+            <summary>
+            Loads the configuration.
+            </summary>
+            <param name="silent">if set to <c>true</c> then no exceptions will be thrown.</param>
+            <param name="isServer">if set to <c>true</c> the application is a server.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.Install">
+            <summary>
+            Installs the application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.Uninstall">
+            <summary>
+            Uninstalls the application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.Install(System.Boolean)">
+            <summary>
+            Installs the application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.ExchangeLdsCertificates">
+            <summary>
+            Adds a copy of the application certificate to the trusted store of the local discovery server
+            and adds a copy of the lds certificate to the trusted store of the application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.PreInstallProcessing(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Does any pre-install processing.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.PostInstallProcessing(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Does any post-install processing.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.FindTrustedStoreForLDS">
+            <summary>
+            Finds the trusted store for LDS.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.FindCertificateForLDS">
+            <summary>
+            Finds the certificate for LDS.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.InstallService(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Installs the service.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.GetAccessRules(UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Gets the access rules.
+            </summary>
+            <param name="settings">The settings.</param>
+            <returns>The access rules to use when setting file permissions.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.SetFilePermissions(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Sets the file permissions.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.SetDirectoryPermissions(System.String,System.Collections.Generic.List{UnifiedAutomation.UaBase.AccessRule},System.Boolean)">
+            <summary>
+            Sets the directory permissions.
+            </summary>
+            <param name="directoryPath">The directory path.</param>
+            <param name="rules">The rules.</param>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.SetFilePermissions(System.String,System.Collections.Generic.List{UnifiedAutomation.UaBase.AccessRule},System.Boolean)">
+            <summary>
+            Sets the file permissions.
+            </summary>
+            <param name="filePath">The file path.</param>
+            <param name="rules">The rules.</param>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.SetHttpsPermissions(System.Uri,System.Collections.Generic.List{UnifiedAutomation.UaBase.AccessRule},System.Boolean)">
+            <summary>
+            Sets the HTTPS permissions for the URL.
+            </summary>
+            <param name="endpointUrl">The endpoint URL.</param>
+            <param name="rules">The rules.</param>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.OpenFirewallPorts(UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Empty virtual method called during the /install command if set in InstallationSettings.
+            </summary>
+            <remarks>
+            Developers can override the method to open the firewall configuration for there application.
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.CloseFirewallPorts(UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Empty virtual method called during the /uninstall command if set in InstallationSettings.
+            </summary>
+            <remarks>
+            Developers can override the method to close the firewall configuration for there application.
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.CreateHttpsBindings(UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Creates the HTTPS bindings. Called during the /install command.
+            </summary>
+            <remarks>
+            All HTTPS addresses are bound to all IP address using the HTTPS certificate in the InstallationSettings.
+            Developers can override the method if they need something different.
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.DeleteHttpsBindings(UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Deletes the HTTPS bindings. Called during the /uninstall command.
+            </summary>
+            All HTTPS addresses are unbound from all IP addresses.
+            Developers can override the method if they need something different.
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.Uninstall(System.Boolean)">
+            <summary>
+            Uninstalls the application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.RemoveCertificateFromLds">
+            <summary>
+            Removes the application certificate from the trusted store of the local discovery server.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.PreUninstallProcessing(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Does any pre-uninstall processing.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.PostUninstallProcessing(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Does any post-uninstall processing.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.UninstallService(System.Boolean,UnifiedAutomation.UaSchema.InstallationSettings)">
+            <summary>
+            Uninstalls the service.
+            </summary>
+            <param name="silent">Do not throw exceptions if TRUE.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService">
+            <summary>
+            Manages the interface between the UA server and the Windows SCM.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService.#ctor(UnifiedAutomation.UaBase.ServerBase,UnifiedAutomation.UaBase.ApplicationInstanceBase,System.Threading.WaitCallback,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService"/> class.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="application">The application.</param>
+            <param name="callback">The callback.</param>
+            <param name="userData">The user data.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService.OnStart(System.String[])">
+            <summary>
+            Starts the server in a background thread.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService.OnStop">
+            <summary>
+            Stops the server so the service can shutdown.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ApplicationInstance.WindowsService.OnBackgroundStart(System.Object)">
+            <summary>
+            Runs the service in a background thread.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AboutDlg">
+            <summary>
+            Display information about the application.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AboutDlg.#ctor(UnifiedAutomation.UaBase.ApplicationLicense)">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.AboutDlg"/> class.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AboutDlg.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AboutDlg.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AboutDlg.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ExceptionDlg">
+            <summary>
+            A dialog that displays an exception trace in an HTML page.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.ExceptionDlg"/> class.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.ReplaceSpecialCharacters(System.String)">
+            <summary>
+            Replaces all special characters in the message.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.Show(System.String,System.Exception)">
+            <summary>
+            Displays the exception in a dialog.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.ShowInnerException(System.String,System.Exception)">
+            <summary>
+            Displays the exception in a dialog.
+            </summary>
+            <remarks>
+            If there is an InnerException, then the innermost InnerException is displayed.
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.Show(System.Windows.Forms.IWin32Window,System.String,System.Exception)">
+            <summary>
+            Displays the exception in a dialog.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.ShowDialog(System.Windows.Forms.IWin32Window,System.String,System.Exception)">
+            <summary>
+            Display the exception in the dialog.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ExceptionDlg.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ExceptionDlg.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.MessageDialog">
+            <summary>
+            A class which displays a simple message dialog.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.MessageDialog"/> class.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="text">The text to display.</param>
+            <returns>The button chosen by the user.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.String,System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <returns>
+            The button chosen by the user.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Exception)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="e">The exception to display in the dialog.</param>
+            <returns>
+            The button chosen by the user.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Exception,System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="e">The exception to display in the dialog.</param>
+            <param name="text">The text to display.</param>
+            <returns>
+            The button chosen by the user.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.String,System.String,System.Windows.Forms.MessageBoxButtons,System.Windows.Forms.MessageBoxIcon)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <param name="buttons">The buttons to display.</param>
+            <param name="icon">The icon to display.</param>
+            <returns>The button chosen by the user.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Windows.Forms.IWin32Window,System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="owner">The owner of the dialog.</param>
+            <param name="text">The text to display.</param>
+            <returns>The button chosen by the user.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Windows.Forms.IWin32Window,System.String,System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="owner">The owner of the dialog.</param>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <returns>The button chosen by the user.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Windows.Forms.IWin32Window,System.String,System.String,System.Windows.Forms.MessageBoxButtons)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="owner">The owner of the dialog.</param>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <param name="buttons">The buttons to display.</param>
+            <returns>The button chosen by the user.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Windows.Forms.IWin32Window,System.String,System.String,System.Windows.Forms.MessageBoxButtons,System.Windows.Forms.MessageBoxIcon)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="owner">The owner of the dialog.</param>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <param name="buttons">The buttons to display.</param>
+            <param name="icon">The icon to display.</param>
+            <returns>The button chosen by the user.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Windows.Forms.IWin32Window,System.Exception,System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="owner">The owner of the dialog.</param>
+            <param name="e">The exception to display in the dialog.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <returns>
+            The button chosen by the user.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Show(System.Windows.Forms.IWin32Window,System.Exception,System.String,System.String)">
+            <summary>
+            Shows the message dialog.
+            </summary>
+            <param name="owner">The owner of the dialog.</param>
+            <param name="e">The exception to display in the dialog.</param>
+            <param name="text">The text.</param>
+            <param name="caption">The caption at the top of the window.</param>
+            <returns>
+            The button chosen by the user.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.ShowDialog(System.Windows.Forms.IWin32Window,System.String,System.String,System.Exception,System.Windows.Forms.MessageBoxButtons,System.Windows.Forms.MessageBoxIcon)">
+            <summary>
+            Shows the dialog.
+            </summary>
+            <param name="owner">The owner.</param>
+            <param name="text">The text.</param>
+            <param name="caption">The caption.</param>
+            <param name="exception">The exception.</param>
+            <param name="buttons">The buttons.</param>
+            <param name="icon">The icon.</param>
+            <returns></returns>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.MessageDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.MessageDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.GuiUtils">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.GuiUtils.GetDefaultIcon">
+            <summary>
+            Gets the default icon.
+            </summary>
+            <returns>An icon.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.GuiUtils.GetAppIcon">
+            <summary>
+            Gets the application icon.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccessRight">
+            <summary>
+            The access rights available.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessRight.None">
+            <summary>
+            No access.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessRight.Run">
+            <summary>
+            The ability to run an application.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessRight.Administer">
+            <summary>
+            The ability to administer an application.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccessRule">
+            <summary>
+            A rule which applies to an entity.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessRule.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.AccessRule"/> class.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessRule.Identity">
+            <summary>
+            Gets or sets the identity which the rule applies to.
+            </summary>
+            <value>
+            The identity which the rule applies to.
+            </value>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessRule.RuleType">
+            <summary>
+            Gets or sets the type of the rule.
+            </summary>
+            <value>
+            The type of the rule.
+            </value>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessRule.Right">
+            <summary>
+            Gets or sets the right.
+            </summary>
+            <value>
+            The right.
+            </value>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccessUtils">
+            <summary>
+            Provides utilities which change the access rights for system objects.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessUtils.GetAccessRules(System.String)">
+            <summary>
+            Gets the application access rules implied by the access rights to the file.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessUtils.SetAccessRules(System.String,System.Collections.Generic.IList{UnifiedAutomation.UaBase.AccessRule},System.Boolean)">
+            <summary>
+            Gets the application access rules implied by the access rights to the file.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessUtils.GetAccessRights(System.Security.AccessControl.AccessControlType,System.Security.AccessControl.FileSystemRights)">
+            <summary>
+            Returns the application rights implied by the file system rights.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessUtils.GetAccessRuleSource(System.IO.FileInfo,System.Security.AccessControl.FileSystemAccessRule)">
+            <summary>
+            Returns the directory that is the source for the specified access rule.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessUtils.SidToAccountName(System.String)">
+            <summary>
+            Converts a SID to a user account name.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessUtils.AccountNameToSid(System.String)">
+            <summary>
+            Converts a user account name to a SID.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessUtils.ReadOnly">
+            <summary>
+            The rights necessary for read a certificate or certificate store.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessUtils.UpdateOnly">
+            <summary>
+            The rights necessary for update a certificate or certificate store.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessUtils.ConfigureOnly">
+            <summary>
+            The rights necessary for change access to a certificate or certificate store.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessUtils.Read">
+            <summary>
+            The rights granted to entities with read access to a certificate or certificate store.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessUtils.Update">
+            <summary>
+            The rights granted to entities with read/update access to a certificate or certificate store.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccessUtils.Configure">
+            <summary>
+            The rights granted to entities with read/update/configure access to a certificate or certificate store.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccountInfo">
+            <summary>
+            Stores information about an account.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:UnifiedAutomation.UaBase.AccountInfo"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountInfo.Name">
+            <summary>
+            The name of the account.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountInfo.Domain">
+            <summary>
+            The domain that the account belongs to.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountInfo.Sid">
+            <summary>
+            The SID for the account.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountInfo.SidType">
+            <summary>
+            The type of SID used by the account.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountInfo.Description">
+            <summary>
+            The description for the account.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountInfo.Status">
+            <summary>
+            The current status for the account.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <param name="format">The format.</param>
+            <param name="formatProvider">The format provider.</param>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            The <paramref name="obj"/> parameter is null.
+              </exception>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.CompareTo(System.Object)">
+            <summary>
+            Compares the obj.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.GetIdentityReference">
+            <summary>
+            Returns the identity reference for the account.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.ApplyFilters(UnifiedAutomation.UaBase.AccountFilters)">
+            <summary>
+            Applies the filters to the account
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.LookupDomainSid(System.String)">
+            <summary>
+            Queries the SID table for the specified account name.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.LookupAccountSid(System.String)">
+            <summary>
+            Queries the SID table for the specified account name.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.Create(System.String)">
+            <summary>
+            Creates an account info object from an identity name.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.CreateUser(System.String,System.String)">
+            <summary>
+            Creates a new NT user account.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.Query(UnifiedAutomation.UaBase.AccountFilters)">
+            <summary>
+            Queries the account table for the specified accounts.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccountInfo.ApplyFilters(UnifiedAutomation.UaBase.AccountFilters,System.Collections.Generic.IList{UnifiedAutomation.UaBase.AccountInfo})">
+            <summary>
+            Applies the filters to the accounts.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccountInfo.AccountSidType">
+            <summary>
+            The type of SID used by the account.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountInfo.AccountSidType.User">
+            <summary>
+            An interactive user account.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountInfo.AccountSidType.Group">
+            <summary>
+            An group of users.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountInfo.AccountSidType.Domain">
+            <summary>
+            A domain.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountInfo.AccountSidType.Alias">
+            <summary>
+            An alias for a group or user.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountInfo.AccountSidType.BuiltIn">
+            <summary>
+            Built-in identity principals.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccountInfo.Win32">
+            <summary>
+            Defines WIN32 types.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccountFilters">
+            <summary>
+            Filters that can be used to restrict the set of accounts returned.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountFilters.Name">
+            <summary>
+            The name of the account (supports the '*' wildcard).
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountFilters.Domain">
+            <summary>
+            The domain that the account belongs to.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccountFilters.AccountTypeMask">
+            <summary>
+            The types of accounts.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccountTypeMask">
+            <summary>
+            The masks that can be use to filter a list of accounts.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountTypeMask.None">
+            <summary>
+            Mask not specified.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountTypeMask.User">
+            <summary>
+            An interactive user account.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountTypeMask.Group">
+            <summary>
+            An NT user group.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.AccountTypeMask.WellKnownGroup">
+            <summary>
+            Well-known groups.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.HttpAccessRule">
+            <summary>
+            An access rule for an HTTP URL used by a WCF service.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.HttpAccessRule.UrlPrefix">
+            <summary>
+            The access right affected by the rule.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.HttpAccessRule.Right">
+            <summary>
+            The access right affected by the rule.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.HttpAccessRule.IdentityName">
+            <summary>
+            The name of the NT account principal which the access rule applies to.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.HttpAccessRule.Win32">
+            <summary>
+            Declares the native methods used by the class.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.CheckForHttpsCertificate(UnifiedAutomation.UaBase.ISecurityProvider,System.Collections.Generic.IList{UnifiedAutomation.UaBase.SslCertificateBinding},System.Uri)">
+            <summary>
+            Checks for HTTPS certificate bound to the URL.
+            </summary>
+            <param name="provider"></param>
+            <param name="bindings">The bindings. GetSslCertificateBindings is called if null.</param>
+            <param name="url">The URL.</param>
+            <returns>Good if the binding exists and the certificate is accessible. An error code otherwise.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.FindSslCertificateBinding(System.Uri)">
+            <summary>
+            Finds the SSL certificate binding.
+            </summary>
+            <param name="url">The URL.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.GetSslCertificateBindings">
+            <summary>
+            Fetches the current SSL certificate configuration.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.SetSslCertificateBinding(UnifiedAutomation.UaBase.SslCertificateBinding)">
+            <summary>
+            Creates a new SSL certificate binding.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.DeleteSslCertificateBinding(System.Net.IPAddress,System.UInt16)">
+            <summary>
+            Deletes a new SSL certificate binding.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.GetAccessRules(System.String)">
+            <summary>
+            Gets the application access rules for the specified URL.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.SetAccessRules(System.String,System.Collections.Generic.IList{UnifiedAutomation.UaBase.HttpAccessRule},System.Boolean)">
+            <summary>
+            Sets the application access rules for the specified URL.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.SetAccessRules(System.Uri,System.Collections.Generic.IList{UnifiedAutomation.UaBase.AccessRule},System.Boolean)">
+            <summary>
+            Sets the application access rules for the specified URL (replaces the hostname with a wildcard).
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.ToIntPtr(System.Net.IPAddress,System.UInt16)">
+            <summary>
+            Serializes an IPAddress.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.ParseSddl(System.String,System.String,System.Collections.Generic.List{UnifiedAutomation.UaBase.HttpAccessRule})">
+            <summary>
+            Extracts the access rules from the SDDL string.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.HttpAccessRule.FormatSddl(System.Collections.Generic.IList{UnifiedAutomation.UaBase.HttpAccessRule})">
+            <summary>
+            Extracts the access rules from the SDDL string.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.AccessControlEntity">
+            <summary>
+            A class that stores the components of ACE within a DACL.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessControlEntity.AccessType">
+            <summary>
+            The access type granted by the ACE.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessControlEntity.Flags">
+            <summary>
+            Any flags associated with the ACE.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessControlEntity.Rights">
+            <summary>
+            The rights allowed/restricted by the ACE.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessControlEntity.ObjectGuid">
+            <summary>
+            The object associated with the ACE.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessControlEntity.InheritObjectGuid">
+            <summary>
+            The inherited object associated with the ACE.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.AccessControlEntity.AccountSid">
+            <summary>
+            The SID for the account which is affected by the ACE.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessControlEntity.Parse(System.String)">
+            <summary>
+            Extracts a list of ACEs from a SDDL string.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.AccessControlEntity.Initialize(System.String)">
+            <summary>
+            Extracts a single ACE from a SDDL string fragment.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.SslCertificateBinding">
+            <summary>
+            Stores the details of an SSL certification configuration binding.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.IPAddress">
+            <summary>
+            The IP Address.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.Port">
+            <summary>
+            The port number.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.Thumbprint">
+            <summary>
+            The certificate thumbprint.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.ApplicationId">
+            <summary>
+            The application id.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.StoreName">
+            <summary>
+            The names of the store to use.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.DefaultCertCheckMode">
+            <summary>
+            The default revocation check mode.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.DefaultRevocationFreshnessTime">
+            <summary>
+            The default revocation freshness time.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.DefaultRevocationUrlRetrievalTimeout">
+            <summary>
+            The default revocation URL timeout.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.DefaultSslCtlIdentifier">
+            <summary>
+            The default certificate trust list identifier.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.DefaultSslCtlStoreName">
+            <summary>
+            The default certificate trust list store.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.SslCertificateBinding.DefaultFlags">
+            <summary>
+            The default flags.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WellKnownSids">
+            <summary>
+            The well known NT security identifiers.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.Interactive">
+            <summary>
+            Interactive users.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.AuthenticatedUser">
+            <summary>
+            Authenticated users.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.AnonymousLogon">
+            <summary>
+            Anonymous Logons
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.LocalSystem">
+            <summary>
+            The local system account.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.LocalService">
+            <summary>
+            The local service account.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.NetworkService">
+            <summary>
+            The network service account.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.Administrators">
+            <summary>
+            The administrators group.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.Users">
+            <summary>
+            The users group.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WellKnownSids.Guests">
+            <summary>
+            The guests group.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WindowsCryptoHelpers">
+            <summary>
+            Defines WIN32 functions that are called by other classes.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.AddCertificateToWindowsStore(System.Boolean,System.String,System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Adds the certificate to windows store.
+            </summary>
+            <param name="useMachineStore">if set to <c>true</c> [use machine store].</param>
+            <param name="storeName">Name of the store.</param>
+            <param name="certificate">The certificate.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.RemoveCertificateFromStore(System.IntPtr,System.String)">
+            <summary>
+            Removes the certificate with the specified thumbprint.
+            </summary>
+            <param name="hStore">The h store.</param>
+            <param name="thumbprint">The thumbprint.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.OpenStore(UnifiedAutomation.UaBase.WindowsStoreType,System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Opens the certificate store.
+            </summary>
+            <param name="storeType">Type of the store.</param>
+            <param name="symbolicName">Name of the symbolic.</param>
+            <param name="readOnly">If true the store is opened as read only.</param>
+            <param name="createAlways">If true the store is created if it does not exist.</param>
+            <param name="throwIfNotExist">If true an exception is thrown if the store does not exist.</param>
+            <returns>
+            A handle to the store which must be closed by the caller.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.EnumerateStores(UnifiedAutomation.UaBase.WindowsStoreType,System.String,System.String)">
+            <summary>
+            Enumerates the available windows certificate store.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.GetThumbprint(System.IntPtr)">
+            <summary>
+            Gets the thumbprint from the certificate context.
+            </summary>
+            <param name="pCertContext">The certificate context.</param>
+            <returns>The thumbprint of the certificate.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.FindCertificate(System.IntPtr,System.String)">
+            <summary>
+            Finds a certificate in the store.
+            </summary>
+            <param name="hStore">The handle for the store to search.</param>
+            <param name="thumbprint">The thumbprint of the certificate to find.</param>
+            <returns>The context for the matching certificate.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.GetKeyFileInfo(System.String,UnifiedAutomation.UaBase.WindowsStoreType,System.String)">
+            <summary>
+            finds the key file.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.GetCspKeyContainerInfo(System.IntPtr,System.String,System.String,UnifiedAutomation.UaBase.WindowsStoreType)">
+            <summary>
+            returns the information for the key container associated with the certificate.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.DuplicateString(System.String)">
+            <summary>
+            converts a managed string to an unmanaged string (allocated with malloc).
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.GetFlags(System.Boolean,System.Int32[])">
+            <summary>
+            Combines the flags for use in an operation.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCryptoHelpers.GetFlags(UnifiedAutomation.UaBase.WindowsStoreType)">
+            <summary>
+            maps the store type onto a set of flags that can be passed to the various crypto functions.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WindowsCertificateFactory">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateFactory.#ctor(UnifiedAutomation.UaBase.ISecurityProvider)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateFactory.Dispose(System.Boolean)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateFactory.CreateCertificate(System.String,UnifiedAutomation.UaBase.CreateCertificateSettings)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateFactory.CreateCertificateRequest(UnifiedAutomation.UaBase.CertificateKeyPair,UnifiedAutomation.UaBase.CreateRequestSettings)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateFactory.UpdateCertificate(UnifiedAutomation.UaBase.ICertificate,UnifiedAutomation.UaBase.ICertificate)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateFactory.LoadCRL(System.Byte[])">
+            <remarks />
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WindowsCertificateStore">
+            <summary>
+            Provides access to the windows certificate store.
+            </summary>
+            <remarks>
+            The WindowsCertificateStore does not support CRLs.
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.WindowsCertificateStore"/> class.
+            </summary>
+            <param name="storePath">The store path.</param>
+            <remarks>
+            <b>Syntax (items enclosed in [] are optional):</b>\n
+            [\\HostName\\]StoreType[\\(ServiceName | UserSid)]\\SymbolicName
+            <dl>
+            <dt>HostName</dt><dd>the name of the machine where the store resides.</dd>
+            <dt>SymbolicName</dt><dd>one of LocalMachine, CurrentUser, User or Service</dd>
+            <dt>ServiceName</dt><dd>the name of an NT service.</dd>
+            <dt>UserSid</dt><dd>the SID for a user account.</dd>
+            <dt>SymbolicName</dt><dd>the symbolic name of the store (e.g. My, Root, Trust, CA, etc.).</dd>
+            </dl>
+            <b>Examples:</b>\n
+            \\MYPC\\LocalMachine\\My \n
+            CurrentUser\\Trust \n
+            \\MYPC\\Service\\My UA Server\\UA Applications \n
+            User\\S-1-5-25\\Root
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.#ctor(UnifiedAutomation.UaBase.CertificateStoreSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnifiedAutomation.UaBase.WindowsCertificateStore"/> class.
+            </summary>
+            <param name="settings">The store settings</param>
+            <remarks>
+            <b>Syntax of settings.StorePath (items enclosed in [] are optional):</b>\n
+            [\\HostName\\]StoreType[\\(ServiceName | UserSid)]\\SymbolicName
+            <dl>
+            <dt>HostName</dt><dd>the name of the machine where the store resides.</dd>
+            <dt>SymbolicName</dt><dd>one of LocalMachine, CurrentUser, User or Service</dd>
+            <dt>ServiceName</dt><dd>the name of an NT service.</dd>
+            <dt>UserSid</dt><dd>the SID for a user account.</dd>
+            <dt>SymbolicName</dt><dd>the symbolic name of the store (e.g. My, Root, Trust, CA, etc.).</dd>
+            </dl>
+            <b>Examples:</b>\n
+            \\MYPC\\LocalMachine\\My \n
+            CurrentUser\\Trust \n
+            \\MYPC\\Service\\My UA Server\\UA Applications \n
+            User\\S-1-5-25\\Root
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Dispose">
+            <summary>
+            May be called by the application to clean up resources.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Dispose(System.Boolean)">
+            <summary>
+            Cleans up all resources held by the object.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.StoreType">
+            <remarks />
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.StorePath">
+            <remarks />
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.SymbolicName">
+            <summary>
+            The symbolic name for the store.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.WindowsStoreType">
+            <summary>
+            The type of windows store.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.HostName">
+            <summary>
+            The name of the machine.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.ServiceNameOrUserSid">
+            <summary>
+            The service name or user SID.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.WindowsCertificateStore.ValidationOptions">
+            <summary>
+            Gets or sets the validation options.
+            </summary>
+            <value>
+            The validation options.
+            </value>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Find(System.String,System.String,System.Boolean)">
+            <summary>
+            Finds a certificate in the store.
+            </summary>
+            <param name="subjectName">The subject name.</param>
+            <param name="thumbprint">The thumbprint.</param>
+            <param name="needPrivateKey">If set to <c>true</c> the certificate is only returned if a private key is accessible.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Find(System.String,System.Boolean)">
+            <summary>
+            Finds a certificate in the store.
+            </summary>
+            <remarks>
+            Calls <c>ICertificate Find(string subjectName, string thumbprint, bool needPrivateKey)</c>
+            </remarks>
+            <param name="thumbprint">The thumbprint.</param>
+            <param name="needPrivateKey">If set to <c>true</c> the certificate is only returned if a private key is accessible.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Find(System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Finds a certificate in the store.
+            </summary>
+            <remarks>
+            Calls <c>ICertificate Find(string subjectName, string thumbprint, bool needPrivateKey)</c>
+            </remarks>
+            <param name="subjectName">The subject name.</param>
+            <param name="thumbprint">The thumbprint.</param>
+            <param name="needPrivateKey">If set to <c>true</c> the certificate is only returned if a private key is accessible.</param>
+            <param name="privateKeyPassword">Must be null or empty</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Add(UnifiedAutomation.UaBase.ICertificate,System.Boolean,System.Boolean)">
+            <summary>
+            Adds the specified certificate to the store.
+            </summary>
+            <param name="certificate">The certificate.</param>
+            <param name="replaceExisting">If set to <c>true</c> any existing certificate is replaced.</param>
+            <param name="savePrivateKey">If set to <c>true</c> any private key is saved as well.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Add(UnifiedAutomation.UaBase.ICertificate,System.Boolean,System.Boolean,System.String)">
+            <summary>
+            Adds the specified certificate to the store.
+            </summary>
+            <param name="certificate">The certificate.</param>
+            <param name="replaceExisting">If set to <c>true</c> any existing certificate is replaced.</param>
+            <param name="savePrivateKey">If set to <c>true</c> any private key is saved as well.</param>
+            <param name="privateKeyPassword">Must be null or empty.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Remove(System.String)">
+            <summary>
+            Removes the specified thumbprint.
+            </summary>
+            <param name="thumbprint">The thumbprint.</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.IsRevoked(UnifiedAutomation.UaBase.ICertificate,UnifiedAutomation.UaBase.ICertificate)">
+            <summary>
+            Determines whether the specified certificate has been revoked by the issuer.
+            </summary>
+            <param name="issuer">The issuer.</param>
+            <param name="certificate">The certificate.</param>
+            <returns>
+            StatusCodes.BadCertificateRevocationUnknown since CRLs are not supported
+            by this class.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.GetPrivateKeyFilePath(System.String)">
+            <summary>
+            Gets the private key file path.
+            </summary>
+            <param name="thumbprint">The thumbprint.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.ParseCRL(System.Byte[])">
+            <summary>
+            Parse the raw representation of a CRL.
+            </summary>
+            <remarks>
+            Throws NotSupportedException. Must be implemented by subclass.<br/>
+            Is called by ServerManger.OnTrustListWrite with single elements of TrustListDataType.IssuerCrls.
+            </remarks>
+            <param name="derData">The raw data of the crl.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.GetCRLs(UnifiedAutomation.UaBase.ICertificate)">
+            <summary>
+            Returns the certificate revocation lists for an issuer.
+            </summary>
+            <remarks>
+            Throws NotSupportedException. Must be implemented by subclass.<br/>
+            Is called by ServerManger.OnTrustListRead.
+            </remarks>
+            <param name="issuer">The issuer of the returned crls. If null, all crls in the store
+            must be returned.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.AddCRLs(System.Collections.Generic.IList{UnifiedAutomation.UaBase.ICertificateRevocationList},System.Boolean)">
+            <summary>
+            Adds crls to the store.
+            </summary>
+            <remarks>
+            Throws NotSupportedException. Must be implemented by subclass.<br/>
+            Is called by ServerManger.OnTrustListWrite.
+            </remarks>
+            <param name="crls"></param>
+            <param name="deleteExisting"></param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.EnumerateStores(UnifiedAutomation.UaBase.WindowsStoreType,System.String,System.String)">
+            <summary>
+            Enumerates the available windows certificate store.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Format">
+            <summary>
+            Returns the string representation of the store.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsCertificateStore.Parse(System.String)">
+            <summary>
+            Parses the a string representing the store location.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WindowsStoreType">
+            <summary>
+            The type of certificate store.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WindowsStoreType.LocalMachine">
+            <summary>
+            The local machine.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WindowsStoreType.CurrentUser">
+            <summary>
+            The current user.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WindowsStoreType.User">
+            <summary>
+            A user account stores.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.WindowsStoreType.Service">
+            <summary>
+            A service account store.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WindowsSecurityProvider">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsSecurityProvider.CreateCertificateFactory">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WindowsSecurityProvider.CreateWindowsStore(UnifiedAutomation.UaBase.CertificateStoreSettings)">
+            <remarks />
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.WcfCertificateValidator">
+            <summary>
+            Wraps a WCF validator so the validator can be used in WCF bindings.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WcfCertificateValidator.#ctor(UnifiedAutomation.UaBase.ICertificateValidator)">
+            <remarks />
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.WcfCertificateValidator.Validate(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <remarks />
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.LocalSecurityPolicy">
+            <summary>
+            Allows to add privileges to Local Security Policy.
+            You can use this class to add the LogOn as service privilege to an account.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.LocalSecurityPolicy.#ctor">
+            <summary>
+            Constructor for <see cref="T:UnifiedAutomation.UaBase.LocalSecurityPolicy"/>
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.LocalSecurityPolicy.#ctor(System.String)">
+            <summary>
+            Constructor for <see cref="T:UnifiedAutomation.UaBase.LocalSecurityPolicy"/>
+            </summary>
+            <param name="systemName">local system if systemName is null</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.LocalSecurityPolicy.AddPrivilege(System.String,System.String)">
+            <summary>
+            Add privileges for the given account
+            </summary>
+            <param name="account">The account name (domain\userName)</param>
+            <param name="privilege">The name of the privilege to add</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.LocalSecurityPolicy.AddLogonAsServicePrivilege(System.String)">
+            <summary>
+            Add the privilege for the given account to logon as service.
+            </summary>
+            <param name="account">The account name (domain\userName)</param>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.LocalSecurityPolicy.Dispose">
+            <summary>
+            Release all unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.LocalSecurityPolicy.Finalize">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.Service">
+            <summary>
+            Represents a windows service
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.Service.#ctor">
+            <summary>
+            Constructor for <see cref="T:UnifiedAutomation.UaBase.Service"/>
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.Service.#ctor(System.String)">
+            <summary>
+            Constructor for <see cref="T:UnifiedAutomation.UaBase.Service"/>
+            </summary>
+            <param name="name">The service name.</param>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.Name">
+            <summary>
+            The service name (Windows identifier for the service)
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.DisplayName">
+            <summary>
+            The service Display name (the friendly name showed by the Windows Service manager).
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.Caption">
+            <summary>
+            The service caption (usually equals to display name)
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.Path">
+            <summary>
+            The service local path
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.StartMode">
+            <summary>
+            The service start mode.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.Account">
+            <summary>
+            Account name under which a service runs.
+            Depending on the service type, the account name may be in the form of DomainName\Username
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.Description">
+            <summary>
+            The service description.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.ProcessorAffinity">
+            <summary>
+            The processor affinity for this service.
+            </summary>
+            <remarks>
+            If the system has 2 processors and the service is running on processor 2 the affinity bit mask will be : [true][false]
+            If the system has 2 processors and the service is running on both processors the affinity bit mask will be : [true][true]
+            </remarks>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.AcceptPause">
+            <summary>
+            Indicates whether the service can be paused
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.AcceptStop">
+            <summary>
+            Indicates whether the service can be stopped
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.ProcessId">
+            <summary>
+            The service process. Zero if not running.
+            </summary>
+        </member>
+        <member name="P:UnifiedAutomation.UaBase.Service.Status">
+            <summary>
+            The service status.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceInstaller">
+            <summary>
+            Provides functionalities to install/uninstall Windows services.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.StartService(System.String)">
+            <summary>
+            Stops the service.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <returns>True if stopped successfully.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.StopService(System.String)">
+            <summary>
+            Stops the service.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <returns>True if stopped successfully.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.SetLogonAsServicePrivilege(System.String)">
+            <summary>
+            Set the Log-On As Service privilege to the given user.
+            </summary>
+            <param name="userName">The account name (domain\name).</param>
+            <returns>True for success; otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.InstallService(System.String,System.String,System.String,System.String,UnifiedAutomation.UaBase.StartMode,System.Boolean@)">
+            <summary>
+            Installs and optionally starts the service.
+            </summary>
+            <param name="path">The full path of the service exe.</param>
+            <param name="name">The name of the service.</param>
+            <param name="displayName">The display name of the service.</param>
+            <param name="description">The description for the service.</param>
+            <param name="startMode">The service start mode.</param>
+            <param name="start">True to start the service after the installation; otherwise, false.
+            Once the method returns you can use this parameter to check whether the service is running or not.</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.InstallService(System.String,System.String,System.String,System.String,UnifiedAutomation.UaBase.StartMode,System.String,System.String,System.Boolean@)">
+            <summary>
+            Installs and optionally starts the service.
+            </summary>
+            <param name="path">The full path of the service exe.</param>
+            <param name="name">The name of the service.</param>
+            <param name="displayName">The display name of the service.</param>
+            <param name="description">The description for the service.</param>
+            <param name="startMode">The service start mode.</param>
+            <param name="userName">The account name. Null to use the default account (LocalSystem).</param>
+            <param name="password">The account password.</param>
+            <param name="start">True to start the service after the installation; otherwise, false.
+            Once the method returns you can use this parameter to check whether the service is running or not.</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.InstallService(System.String,System.String,System.String,System.String,UnifiedAutomation.UaBase.StartMode,System.String,System.String,System.Boolean@,System.String[])">
+            <summary>
+            Installs and optionally starts the service.
+            </summary>
+            <param name="path">The full path of the service exe.</param>
+            <param name="name">The name of the service.</param>
+            <param name="displayName">The display name of the service.</param>
+            <param name="description">The description for the service.</param>
+            <param name="startMode">The service start mode.</param>
+            <param name="userName">The account name. Null to use the default account (LocalSystem).</param>
+            <param name="password">The account password.</param>
+            <param name="start">True to start the service after the installation; otherwise, false.
+            Once the method returns you can use this parameter to check whether the service is running or not.</param>
+            <param name="dependencies">The list of dependencies services. Null if there are no dependencies.</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.UnInstallService(System.String)">
+            <summary>
+            Uninstalls the service with the given name.
+            </summary>
+            <param name="name">The name of the service to uninstall.</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceInstaller.Win32">
+            <summary>
+            Declares PInvoke APIs.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceInstaller.SafeCloseServiceHandle(System.IntPtr)">
+            <summary>
+            Safe close the service handle
+            </summary>
+            <param name="handle"></param>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceManager">
+            <summary>
+            Provides functionalities to manage Windows services such as Start/Stop service.
+            </summary>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.StartService(System.String)">
+            <summary>
+            Start the service with the given name.
+            This method returns as soon as the Start method on the service
+            is called and does not guarantee the running status of the service.
+            You can call this method after stop or pause the service in order to re-start it.
+            </summary>
+            <param name="serviceName">The name of the service</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.StartService(System.String,System.TimeSpan)">
+            <summary>
+            Start the service with the given name and wait until the status of the service is running.
+            If the service status is not running after the given timeout then the service is considered not started.
+            You can call this method after stop or pause the service in order to re-start it.
+            </summary>
+            <param name="serviceName">The name of the service</param>
+            <param name="timeout">The timeout.</param>
+            <returns>True if the service has been started. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.StopService(System.String,System.TimeSpan)">
+            <summary>
+            Stop the service with the given name and wait until the service status is stopped.
+            If the service status is not stopped after the given timeout then the service is considered not stopped.
+            </summary>
+            <param name="serviceName">The name of the service</param>
+            <param name="timeout">The timeout.</param>
+            <returns>True if the service has been stopped. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.StopService(System.String)">
+            <summary>
+            Stop the service with the given name. This method returns as soon as the Stop method on the service
+            is called and does not guarantee the stopped status of the service.
+            </summary>
+            <param name="serviceName">The name of the service</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.PauseService(System.String,System.TimeSpan)">
+            <summary>
+            Pause the service with the given name and wait until the service status is paused.
+            If the service status is not paused after the given timeout then the service is considered not paused.
+            </summary>
+            <param name="serviceName">The name of the service</param>
+            <param name="timeout">The timeout.</param>
+            <returns>True if the service has been paused. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.PauseService(System.String)">
+            <summary>
+            Pause the service with the given name. This method returns as soon as the Pause method on the service
+            is called and does not guarantee the paused status of the service.
+            </summary>
+            <param name="serviceName">The name of the service</param>
+            <returns>True for success. Otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetServiceStatus(System.String)">
+            <summary>
+            Gets the status of the service with the given name.
+            </summary>
+            <param name="serviceName">The name of the service.</param>
+            <returns>The <see cref="T:UnifiedAutomation.UaBase.ServiceStatus"/>.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.IsServiceRunning(System.String)">
+            <summary>
+            Determine whether the service with the given name is running.
+            </summary>
+            <param name="serviceName">The name of the service.</param>
+            <returns>True if the service is running.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.IsServiceStopped(System.String)">
+            <summary>
+            Determine whether the service with the given name is stopped.
+            </summary>
+            <param name="serviceName">The name of the service.</param>
+            <returns>True if the service is stopped.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.IsServicePaused(System.String)">
+            <summary>
+            Determine whether the service with the given name is paused.
+            </summary>
+            <param name="serviceName">The name of the service.</param>
+            <returns>True if the service is paused.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.SetServiceStartMode(System.String,UnifiedAutomation.UaBase.StartMode,System.UInt32@)">
+            <summary>
+            Modifies the start mode of a Windows service.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <param name="startMode">The new start mode.</param>
+            <param name="retValue">The return value.
+            Return value Description:
+            0 Success
+            1 Not Supported
+            2 Access Denied
+            3 Dependent Services Running
+            4 Invalid Service Control
+            5 Service Cannot Accept Control
+            6 Service Not Active
+            7 Service Request Timeout
+            8 Unknown Failure
+            9 Path Not Found
+            10 Service Already Running
+            11 Service Database Locked
+            12 Service Dependency Deleted
+            13 Service Dependency Failure
+            14 Service Disabled
+            15 Service Logon Failure
+            16 Service Marked For Deletion
+            17 Service No Thread
+            18 Status Circular Dependency
+            19 Status Duplicate Name
+            20 Status Invalid Name
+            21 Status Invalid Parameter
+            22 Status Invalid Service Account
+            23 Status Service Exists
+            24 Service Already Paused
+            </param>
+            <returns>True if succeed; otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetServiceStartMode(System.String)">
+            <summary>
+            Gets the start mode of the service with the given name.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <returns>The service start mode.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetAllServices">
+            <summary>
+            Gets all installed Windows services.
+            </summary>
+            <returns>The list of installed <see cref="T:UnifiedAutomation.UaBase.Service"/>.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetService(System.String)">
+            <summary>
+            Gets the <see cref="T:UnifiedAutomation.UaBase.Service"/> with the given name.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <returns>The <see cref="T:UnifiedAutomation.UaBase.Service"/> identified by the given name.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.ServiceExists(System.String)">
+            <summary>
+            Gets a value whether the service with the given name is installed.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <returns>True if the service with the given name exists; otherwise, false.</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.SetServiceProcessorAffinity(System.String,System.Boolean[])">
+            <summary>
+            Set the processor affinity for the service with the given name.
+            </summary>
+            <param name="serviceName">the service name.</param>
+            <param name="affinity">The affinity bitmask.</param>
+            <returns>True for success; otherwise, false.</returns>
+            <remarks>
+            If the system has 2 processor and the service is running on processor 2 the affinity bit mask will be : [true][false]
+            If the system has 2 processor and the service is running on both processors the affinity bit mask will be : [true][true]
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetProcessorAffinity(System.Int32)">
+            <summary>
+            Gets the processor affinity for the process with the given id.
+            </summary>
+            <param name="processId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetServiceProcessorAffinity(System.String)">
+            <summary>
+            Gets the affinity for the service with the given name.
+            </summary>
+            <param name="serviceName">the service name.</param>
+            <returns>The affinity bit mask.</returns>
+            <remarks>
+            If the system has 2 processor and the service is running on processor 2 the affinity bit mask will be : [true][false]
+            If the system has 2 processor and the service is running on both processors the affinity bit mask will be : [true][true]
+            </remarks>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetNumberOfProcessors">
+            <summary>
+            Gets the number of physical processors on the system.
+            </summary>
+            <returns>The number of physical processors</returns>
+        </member>
+        <member name="M:UnifiedAutomation.UaBase.ServiceManager.GetNumberOfLogicalProcessors">
+            <summary>
+            Gets the number of logical processors on the system.
+            </summary>
+            <returns>The number of logical processors</returns>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceAccess">
+            <summary>
+            Access to the service. Before granting the requested access, the
+            system checks the access token of the calling process.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.QueryConfig">
+            <summary>
+            Required to call the QueryServiceConfig and
+            QueryServiceConfig2 functions to query the service configuration.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.ChangeConfig">
+            <summary>
+            Required to call the ChangeServiceConfig or ChangeServiceConfig2 function
+            to change the service configuration. Because this grants the caller
+            the right to change the executable file that the system runs,
+            it should be granted only to administrators.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.QueryStatus">
+            <summary>
+            Required to call the QueryServiceStatusEx function to ask the service
+            control manager about the status of the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.EnumerateDependents">
+            <summary>
+            Required to call the EnumDependentServices function to enumerate all
+            the services dependent on the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.Start">
+            <summary>
+            Required to call the StartService function to start the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.Stop">
+            <summary>
+                Required to call the ControlService function to stop the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.PauseContinue">
+            <summary>
+            Required to call the ControlService function to pause or continue
+            the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.Interrogate">
+            <summary>
+            Required to call the EnumDependentServices function to enumerate all
+            the services dependent on the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.UserDefinedControl">
+            <summary>
+            Required to call the ControlService function to specify a user-defined
+            control code.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.AllAccess">
+            <summary>
+            Includes STANDARD_RIGHTS_REQUIRED in addition to all access rights in this table.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.GenericRead">
+            <summary>
+            Generic read
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.GenericWrite">
+            <summary>
+            Generic Write
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.GenericExecute">
+            <summary>
+            Generic Execute
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.SystemSecurity">
+            <summary>
+            Required to call the QueryServiceObjectSecurity or
+            SetServiceObjectSecurity function to access the SACL. The proper
+            way to obtain this access is to enable the SE_SECURITY_NAME
+            privilege in the caller's current access token, open the handle
+            for ACCESS_SYSTEM_SECURITY access, and then disable the privilege.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.Delete">
+            <summary>
+            Required to call the DeleteService function to delete the service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.ReadControl">
+            <summary>
+            Required to call the QueryServiceObjectSecurity function to query
+            the security descriptor of the service object.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.WriteDac">
+            <summary>
+            Required to call the SetServiceObjectSecurity function to modify
+            the Dacl member of the service object's security descriptor.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceAccess.WriteOwner">
+            <summary>
+            Required to call the SetServiceObjectSecurity function to modify
+            the Owner and Group members of the service object's security
+            descriptor.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceType">
+            <summary>
+            Service types.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceType.KernelDriver">
+            <summary>
+            Driver service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceType.FileSystemDriver">
+            <summary>
+            File system driver service.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceType.OwnProcess">
+            <summary>
+            Service that runs in its own process.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceType.ShareProcess">
+            <summary>
+            Service that shares a process with one or more other services.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceType.InteractiveProcess">
+            <summary>
+            The service can interact with the desktop.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceError">
+            <summary>
+            Severity of the error, and action taken, if this service fails
+            to start.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceError.ErrorIgnore">
+            <summary>
+            The startup program ignores the error and continues the startup
+            operation.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceError.ErrorNormal">
+            <summary>
+            The startup program logs the error in the event log but continues
+            the startup operation.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceError.ErrorSevere">
+            <summary>
+            The startup program logs the error in the event log. If the
+            last-known-good configuration is being started, the startup
+            operation continues. Otherwise, the system is restarted with
+            the last-known-good configuration.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceError.ErrorCritical">
+            <summary>
+            The startup program logs the error in the event log, if possible.
+            If the last-known-good configuration is being started, the startup
+            operation fails. Otherwise, the system is restarted with the
+            last-known good configuration.
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.ServiceStatus">
+            <summary>
+            Represents the service status.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.Stopped">
+            <summary>
+            The service is stopped
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.StartPending">
+            <summary>
+            The service is going to process a start request
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.StopPending">
+            <summary>
+            The service is going to process a stop request
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.Running">
+            <summary>
+            The service started
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.ContinuePending">
+            <summary>
+            The service is going to process a continue request
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.PausePending">
+            <summary>
+            The service is going to process a pause request
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.Paused">
+            <summary>
+            The service is paused
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.ServiceStatus.Unknown">
+            <summary>
+            Unknown status
+            </summary>
+        </member>
+        <member name="T:UnifiedAutomation.UaBase.StartMode">
+            <summary>
+            Start mode of the Windows service
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.StartMode.Boot">
+            <summary>
+            Device driver started by the operating system loader (valid only for driver services).
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.StartMode.System">
+            <summary>
+            Device driver started by the operating system initialization process. This value is valid only for driver services.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.StartMode.Auto">
+            <summary>
+            Service to be started automatically during system startup.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.StartMode.Manual">
+            <summary>
+            Service to be started manually by a call to the StartService method.
+            </summary>
+        </member>
+        <member name="F:UnifiedAutomation.UaBase.StartMode.Disabled">
+            <summary>
+            Service that can no longer be started.
+            </summary>
+        </member>
+        <member name="T:AssemblyVersionInfo">
+            <summary>
+            Defines string constants for SDK version information.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.Copyright">
+            <summary>
+            The current copy right notice.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.Product">
+            <summary>
+            The current Product name.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.Company">
+            <summary>
+            The current Company name.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.Description">
+            <summary>
+            The current Description of the library.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.Title">
+            <summary>
+            The current name of the library.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.CurrentVersion">
+            <summary>
+            The current build version.
+            </summary>
+        </member>
+        <member name="F:AssemblyVersionInfo.CurrentFileVersion">
+            <summary>
+            The current build file version.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{692bcb61-84dc-43d6-bede-ddb51fddc018}") = "PackMLModel", "PackMLModel.csproj", "{8bc3e1e2-9904-48c2-a408-ae1a4a43722a}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8bc3e1e2-9904-48c2-a408-ae1a4a43722a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8bc3e1e2-9904-48c2-a408-ae1a4a43722a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8bc3e1e2-9904-48c2-a408-ae1a4a43722a}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8bc3e1e2-9904-48c2-a408-ae1a4a43722a}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96744061-4d74-4495-8b38-0ff8884bc8f6}
+	EndGlobalSection
+EndGlobal

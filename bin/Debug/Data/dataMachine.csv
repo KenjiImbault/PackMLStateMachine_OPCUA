@@ -1,0 +1,15 @@
+Machine name,NameOfTheMachine
+State,IDLE
+
+AlarmsID,1,2,3,4,5,6,
+Command,Abort,Abort,Hold,Hold,Hold,Start,
+Message,Abort,Abort,Hold - Error on material,Hold - Error on glue,a1,a2,
+AlarmState,false,false,false,false,false,false,
+
+StackLightID,1,2,3,4,8,9,10,
+Description,Green Solid,Amber Solid,Red Solid,Blue Solid,Cyan Flashing,sl1,sl2,
+StackLightState,false,false,false,false,false,false,false,
+
+CommandID,1,1,2,2,3,3,3,4,4,4,4,4,4,4,4,4,
+CommandName,Hold/Unhold,Hold/Unhold,Suspend/Unsuspend,Suspend/Unsuspend,Start,Start,Start,Button,Button,Button,Button,Button,Button,Button,Button,Button,
+Actions,Hold,Unhold,Suspend,Unsuspend,Start,Unhold,Unsuspend,StateCompleted,Reset,Start,Stop,Hold,Unhold,Suspend,Unsuspend,Abort,

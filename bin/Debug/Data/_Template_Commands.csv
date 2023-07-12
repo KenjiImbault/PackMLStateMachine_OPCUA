@@ -1,0 +1,6 @@
+﻿commandID,commandName,Actions
+1,Hold/Unhold,4
+,,5
+2,Suspend/Unsuspend,6
+,,7
+3,Start,2
