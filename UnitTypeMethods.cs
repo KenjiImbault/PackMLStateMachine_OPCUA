@@ -643,10 +643,9 @@ namespace FIP.PackMLStateMachine
             }
             if(alarmID>model.Dictionnaries.Alarms.Count())
             {
-                return StatusCodes.BadIndexRangeInvalid;
+                return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
             bool changed = false;
             List<AlarmType> alarmTypes = new List<AlarmType>();
 
@@ -666,7 +665,6 @@ namespace FIP.PackMLStateMachine
                 {
                     alarmTypes.Add(alarm);
                 }
-                i++;
             }
             if(changed==false)
             {
@@ -689,7 +687,47 @@ namespace FIP.PackMLStateMachine
             int buttonID
             )
         {
-            return StatusCodes.BadNotImplemented;
+            if (buttonID < 0)
+            {
+                return StatusCodes.BadIndexRangeNoData;
+            }
+            if (model.Dictionnaries.Buttons == null)
+            {
+                return StatusCodes.BadIndexRangeNoData;
+            }
+            if (buttonID > model.Dictionnaries.Buttons.Count())
+            {
+                return StatusCodes.BadIndexRangeNoData;
+            }
+
+            bool changed = false;
+            List<Command> commands = new List<Command>();
+
+            foreach(ButtonType button in model.Dictionnaries.Buttons)
+            {
+                if(button.Id == buttonID)
+                {
+                    foreach(Command command in button.Commands)
+                    {
+                        commands.Add(command);
+                    }
+                    changed = true;
+                    break;
+                }
+            }
+
+            if(changed == false)
+            {
+                return StatusCodes.BadIndexRangeNoData;
+            }
+
+            Unit unit = new Unit((State)model.CurrentState);
+            unit.AddCommandMachine(1, "temp", commands);
+            unit.TriggerCommandMachine(1);
+
+            model.CurrentState = (int)unit.CurrentState;
+
+            return StatusCodes.Good;
         }
 
         /// <summary>
@@ -714,10 +752,9 @@ namespace FIP.PackMLStateMachine
             }
             if (stacklightID > model.Dictionnaries.StackLights.Count())
             {
-                return StatusCodes.BadIndexRangeInvalid;
+                return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
             bool changed = false;
             List<StackLightType> stacklightTypes = new List<StackLightType>();
 
@@ -736,7 +773,6 @@ namespace FIP.PackMLStateMachine
                 {
                     stacklightTypes.Add(stacklight);
                 }
-                i++;
             }
             if (changed == false)
             {
@@ -769,10 +805,9 @@ namespace FIP.PackMLStateMachine
             }
             if (alarmID > model.Dictionnaries.Alarms.Count())
             {
-                return StatusCodes.BadIndexRangeInvalid;
+                return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
             bool changed = false;
             List<AlarmType> alarmTypes = new List<AlarmType>();
 
@@ -792,7 +827,7 @@ namespace FIP.PackMLStateMachine
                 {
                     alarmTypes.Add(alarm);
                 }
-                i++;
+
             }
             if (changed == false)
             {
@@ -825,10 +860,10 @@ namespace FIP.PackMLStateMachine
             }
             if (stacklightID > model.Dictionnaries.StackLights.Count())
             {
-                return StatusCodes.BadIndexRangeInvalid;
+                return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
+
             bool changed = false;
             List<StackLightType> stacklightTypes = new List<StackLightType>();
 
@@ -847,7 +882,7 @@ namespace FIP.PackMLStateMachine
                 {
                     stacklightTypes.Add(stacklight);
                 }
-                i++;
+
             }
             if (changed == false)
             {
