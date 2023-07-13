@@ -33,7 +33,7 @@
 ** The complete license agreement can be found here:
 ** http://unifiedautomation.com/License/SLA/2.8/
 **
-** Created: 12.07.2023
+** Created: 13.07.2023
 **
 ******************************************************************************/
 
@@ -311,6 +311,7 @@ namespace FIP.PackMLStateMachine
             else
             {
                 Dictionnaries = new Dictionnaries_FolderModel(template.Dictionnaries);
+                MachineImage = template.MachineImage == null ? null : template.MachineImage.Clone() as byte[];
                 MachineName = template.MachineName == null ? null : template.MachineName.Clone() as string;
             }
         }
@@ -371,6 +372,17 @@ namespace FIP.PackMLStateMachine
         /// </summary>
         [UaInstanceDeclaration(NamespaceUri = Namespaces.PackMLStateMachine)]
         public Dictionnaries_FolderModel Dictionnaries { get; set; }
+
+        /// <summary>
+        /// Gets or sets the MachineImage
+        /// </summary>
+        [UaInstanceDeclaration(NamespaceUri = Namespaces.PackMLStateMachine)]
+        public byte[] MachineImage
+        {
+            get => m_MachineImage;
+            set => SetField(ref m_MachineImage, value, nameof(MachineImage));
+        }
+        private byte[] m_MachineImage;
 
         /// <summary>
         /// Gets or sets the MachineName

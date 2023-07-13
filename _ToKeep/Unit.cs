@@ -475,11 +475,11 @@ namespace PackML_v0
                 {
                     if (IsAlarmOn(alarm))
                     {
-                        writer.Write("true");
+                        writer.Write("TRUE");
                     }
                     else
                     {
-                        writer.Write("false");
+                        writer.Write("FALSE");
                     }
                     writer.Write(delimiter);
                 }
@@ -507,11 +507,11 @@ namespace PackML_v0
                 {
                     if (IsStackLightOn(stacklight))
                     {
-                        writer.Write("true");
+                        writer.Write("TRUE");
                     }
                     else
                     {
-                        writer.Write("false");
+                        writer.Write("FALSE");
                     }
                     writer.Write(delimiter);
                 }

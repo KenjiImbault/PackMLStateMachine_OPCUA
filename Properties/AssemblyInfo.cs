@@ -34,7 +34,7 @@
 ** The complete license agreement can be found here:
 ** http://unifiedautomation.com/License/SLA/2.8/
 **
-** Created: 12.07.2023
+** Created: 13.07.2023
 **
 ******************************************************************************/
 
@@ -61,7 +61,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8bc3e1e2-9904-48c2-a408-ae1a4a43722a")]
+[assembly: Guid("20d8827b-e82c-4e26-8508-fbe282e08edb")]
 
 // Version information for an assembly consists of the following four values:
 //

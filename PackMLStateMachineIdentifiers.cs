@@ -33,7 +33,7 @@
 ** The complete license agreement can be found here:
 ** http://unifiedautomation.com/License/SLA/2.8/
 **
-** Created: 12.07.2023
+** Created: 13.07.2023
 **
 ******************************************************************************/
 
@@ -488,6 +488,11 @@ namespace FIP.PackMLStateMachine
         /// The identifier for the InputArguments Variable.
         /// </summary>
         public const uint UnitType_ExecuteProcess_InputArguments = 6082;
+
+        /// <summary>
+        /// The identifier for the MachineImage Variable.
+        /// </summary>
+        public const uint UnitType_MachineImage = 6010;
 
         /// <summary>
         /// The identifier for the MachineName Variable.
@@ -1073,6 +1078,11 @@ namespace FIP.PackMLStateMachine
         public static readonly ExpandedNodeId UnitType_ExecuteProcess_InputArguments = new ExpandedNodeId(Variables.UnitType_ExecuteProcess_InputArguments, Namespaces.PackMLStateMachine);
 
         /// <summary>
+        /// The identifier for the UnitType_MachineImage Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId UnitType_MachineImage = new ExpandedNodeId(Variables.UnitType_MachineImage, Namespaces.PackMLStateMachine);
+
+        /// <summary>
         /// The identifier for the UnitType_MachineName Variable.
         /// </summary>
         public static readonly ExpandedNodeId UnitType_MachineName = new ExpandedNodeId(Variables.UnitType_MachineName, Namespaces.PackMLStateMachine);
@@ -1268,6 +1278,10 @@ namespace FIP.PackMLStateMachine
         /// The BrowseName for the IsCommandAvailable component.
         /// </summary>
         public const string IsCommandAvailable = "IsCommandAvailable";
+        /// <summary>
+        /// The BrowseName for the MachineImage component.
+        /// </summary>
+        public const string MachineImage = "MachineImage";
         /// <summary>
         /// The BrowseName for the MachineName component.
         /// </summary>

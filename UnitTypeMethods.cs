@@ -57,62 +57,6 @@ namespace FIP.PackMLStateMachine
     public partial class UnitModel : PackMLStateModelModel, IUnitMethods
     {
 
-        public void DrawStraightLine(Bitmap bitmap, Point p1, Point p2, Color color)
-        {
-            bool paint = false;
-            int exit = 0;
-
-            if(p1.X == p2.X)
-            {
-                for (int x = 0; x < bitmap.Width; x++)
-                {
-                    for (int y = 0; y < bitmap.Height; y++)
-                    {
-                        if (y == p1.Y || y == p2.Y)
-                        {
-                            paint = !paint;
-                            exit++;
-                            if (exit == 2)
-                            {
-                                break;
-                            }
-                        }
-                        if (paint)
-                        {
-                            bitmap.SetPixel(x, y, color);
-                        }
-                    }
-                }
-            }
-            else if (p1.Y == p2.Y)
-            {
-                for (int y = 0; y < bitmap.Height; y++)
-                {
-                    for (int x = 0; x < bitmap.Width; x++)
-                    {
-                        if (x == p1.X || x == p2.X)
-                        {
-                            paint = !paint;
-                            exit++;
-                            if(exit==2)
-                            {
-                                break;
-                            }
-                        }
-                        if (paint)
-                        {
-                            bitmap.SetPixel(x, y, color);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                throw new Exception("Xs and Ys of pixel positions are both different: Impossible to draw a straight horizontal or vertical line");
-            }
-
-        }
-
 
         public byte[] GenerateImage(string fpath, string newfpath, int state)
         {
@@ -202,7 +146,7 @@ namespace FIP.PackMLStateMachine
         public void UpdateState(UnitModel model, int state)
         {
             model.CurrentState = state;
-            GenerateImage(@"Data/image.jpg",@"Data/newImage.jpg",state);
+            model.MachineImage = GenerateImage(@"Data/image.jpg",@"Data/newImage.jpg",state);
         }
 
         /// <summary>
