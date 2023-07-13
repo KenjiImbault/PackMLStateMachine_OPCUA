@@ -419,7 +419,226 @@ namespace FIP.PackMLStateMachine
             string delimiter
             )
         {
-            return StatusCodes.BadNotImplemented;
+
+            string path = @"Data/" + csvFileName;
+
+            List<int> alarmsID = new List<int>();
+            List<Command> commands = new List<Command>();
+            List<string> messages = new List<string>();
+
+            List<int> stacklightID = new List<int>();
+            List<string> description = new List<string>();
+
+            List<int> commandID = new List<int>();
+            List<string> commandName = new List<string>();
+            List<Command> actionsOfACommand = new List<Command>();
+            List<List<Command>> actions = new List<List<Command>>();
+
+            Dictionary<int, bool> alarmsState = new Dictionary<int, bool>();
+            Dictionary<int, bool> stackLightsState = new Dictionary<int, bool>();
+
+            State stateMachine = new State();
+
+            int numberOfLine = 0;
+
+            Dictionary<int, int> howManyActionsInThisID = new Dictionary<int, int>();
+            int actionsNum = 0;
+
+            using (StreamReader reader = new StreamReader(path))
+            {
+
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] values = line != null ? line.Split(char.Parse(delimiter)) : Array.Empty<string>();
+                    numberOfLine++;
+                    switch (numberOfLine)
+                    {
+                        case 1:
+                            model.MachineName = values[1];
+                            break;
+                        case 2:
+                            stateMachine = (State)Enum.Parse(typeof(State), values[1]);
+                            break;
+                        case 4:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    alarmsID.Add(int.Parse(values[i]));
+                                }
+                            }
+                            break;
+                        case 5:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    commands.Add((Command)Enum.Parse(typeof(Command), values[i]));
+                                }
+                            }
+                            break;
+                        case 6:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    messages.Add(values[i]);
+                                }
+                            }
+                            break;
+                        case 7:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    alarmsState[alarmsID[i - 1]] = bool.Parse(values[i]);
+                                }
+                            }
+                            break;
+                        case 9:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    stacklightID.Add(int.Parse(values[i]));
+                                }
+                            }
+                            break;
+                        case 10:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    description.Add(values[i]);
+                                }
+                            }
+                            break;
+                        case 11:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != "")
+                                {
+                                    stackLightsState[stacklightID[i - 1]] = bool.Parse(values[i]);
+                                }
+                            }
+                            break;
+
+                        case 13:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+
+                                if (values[i] != values[i - 1])
+                                {
+                                    actionsNum = 0;
+                                    if (values[i] != "")
+                                    {
+                                        commandID.Add(int.Parse(values[i]));
+                                    }
+                                }
+                                else
+                                {
+                                    actionsNum++;
+                                }
+                                if (values[i] != "")
+                                {
+                                    howManyActionsInThisID[int.Parse(values[i])] = actionsNum + 1;
+                                }
+                            }
+                            break;
+
+                        case 14:
+                            for (int i = 1; i < values.Length; i++)
+                            {
+                                if (values[i] != values[i - 1])
+                                {
+                                    if (values[i] != "")
+                                    {
+                                        commandName.Add(values[i]);
+                                    }
+                                }
+                            }
+                            break;
+
+                        case 15:
+                            int j = 1;
+                            foreach (int id in commandID)
+                            {
+                                for (int i = 1; i <= howManyActionsInThisID[id]; i++)
+                                {
+
+                                    if (j < values.Length && values[j] != "")
+                                    {
+                                        actionsOfACommand.Add((Command)Enum.Parse(typeof(Command), values[j]));
+                                    }
+                                    j++;
+                                }
+                                actions.Add(actionsOfACommand);
+                                actionsOfACommand = new List<Command>();
+                            }
+                            break;
+
+                    }
+                }
+            }
+
+            model.Dictionnaries.Alarms = new AlarmType[] { };
+            model.Dictionnaries.StackLights = new StackLightType[] { };
+            model.Dictionnaries.Buttons = new ButtonType[] { };
+
+            for (int i = 0; i < alarmsID.Count; i++)
+            {
+                AlarmType alarm = new AlarmType();
+                alarm.Id = alarmsID[i];
+                alarm.AlarmTransition = (int) commands[i];
+                alarm.AlarmMessage = messages[i];
+                AddAlarm(context, model, alarm);
+            }
+
+            for (int i = 0; i < stacklightID.Count; i++)
+            {
+                StackLightType stackLightType = new StackLightType();
+                stackLightType.Id = stacklightID[i];
+                stackLightType.Description = description[i];
+                AddStackLight(context, model, stackLightType);
+            }
+
+            for (int i = 0; i < commandID.Count; i++)
+            {
+                ButtonType buttonType = new ButtonType();
+                buttonType.Id= commandID[i];
+                buttonType.ButtonName = commandName[i];
+
+                List<int> actionsInt = new List<int>();
+                foreach(int c in actions[i])
+                {
+                    actionsInt.Add(c);
+                }
+
+                buttonType.Commands = actionsInt.ToArray();
+
+                AddButtons(context, model, buttonType);
+            }
+
+            foreach (int id in alarmsState.Keys)
+            {
+                if (alarmsState[id])
+                {
+                    _ = TriggerAlarm(context, model, id);
+                }
+            }
+
+            foreach (int id in stackLightsState.Keys)
+            {
+                if (stackLightsState[id])
+                {
+                    _ = TriggerStackLight(context, model, id);
+                }
+            }
+
+            model.CurrentState = (int)stateMachine;
+
+            return StatusCodes.Good;
         }
 
         /// <summary>
@@ -458,8 +677,6 @@ namespace FIP.PackMLStateMachine
                 return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
-
             List<AlarmType> alarmTypes = model.Dictionnaries.Alarms.ToList();
 
             foreach(AlarmType alarm in alarmTypes)
@@ -470,7 +687,6 @@ namespace FIP.PackMLStateMachine
                     model.Dictionnaries.Alarms = alarmTypes.ToArray();
                     return StatusCodes.Good;
                 }
-                i++;
             }
             return StatusCodes.BadIndexRangeNoData;
         }
@@ -496,8 +712,6 @@ namespace FIP.PackMLStateMachine
                 return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
-
             List<ButtonType> buttonTypes = model.Dictionnaries.Buttons.ToList();
 
             foreach (ButtonType button in buttonTypes)
@@ -508,7 +722,6 @@ namespace FIP.PackMLStateMachine
                     model.Dictionnaries.Buttons = buttonTypes.ToArray();
                     return StatusCodes.Good;
                 }
-                i++;
             }
             return StatusCodes.BadIndexRangeNoData;
         }
@@ -534,8 +747,6 @@ namespace FIP.PackMLStateMachine
                 return StatusCodes.BadIndexRangeNoData;
             }
 
-            int i = 0;
-
             List<StackLightType> stacklightTypes = model.Dictionnaries.StackLights.ToList();
 
             foreach (StackLightType stacklight in stacklightTypes)
@@ -546,7 +757,6 @@ namespace FIP.PackMLStateMachine
                     model.Dictionnaries.StackLights = stacklightTypes.ToArray();
                     return StatusCodes.Good;
                 }
-                i++;
             }
             return StatusCodes.BadIndexRangeNoData;
         }
@@ -587,7 +797,141 @@ namespace FIP.PackMLStateMachine
             string delimiter
             )
         {
-            return StatusCodes.BadNotImplemented;
+            AlarmType[] tempAlarm = new AlarmType[] {};
+            if(model.Dictionnaries.Alarms == null)
+            {
+                model.Dictionnaries.Alarms = tempAlarm;
+            }
+
+            StackLightType[] tempStackLight = new StackLightType[] { };
+            if (model.Dictionnaries.StackLights == null)
+            {
+                model.Dictionnaries.StackLights = tempStackLight;
+            }
+
+            ButtonType[] tempButton = new ButtonType[] { };
+            if (model.Dictionnaries.Buttons == null)
+            {
+                model.Dictionnaries.Buttons = tempButton;
+            }
+
+            string path = @"Data/" + csvFileName;
+
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+
+                writer.WriteLine("Machine name" + delimiter + MachineName);
+                writer.WriteLine("State" + delimiter + (State) CurrentState);
+                writer.WriteLine("");
+
+                writer.Write("AlarmsID" + delimiter);
+                foreach (AlarmType alarm in model.Dictionnaries.Alarms)
+                {
+                    writer.Write(alarm.Id);
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+                writer.Write("Command" + delimiter);
+                foreach (AlarmType alarm in model.Dictionnaries.Alarms)
+                {
+                    writer.Write((Command) alarm.AlarmTransition);
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+                writer.Write("Message" + delimiter);
+                foreach (AlarmType alarm in model.Dictionnaries.Alarms)
+                {
+                    writer.Write(alarm.AlarmMessage.ToString());
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+                writer.Write("AlarmState" + delimiter);
+                foreach (AlarmType alarm in model.Dictionnaries.Alarms)
+                {
+                    if (alarm.On == true)
+                    {
+                        writer.Write("TRUE");
+                    }
+                    else
+                    {
+                        writer.Write("FALSE");
+                    }
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+                writer.WriteLine("");
+                writer.Write("StackLightID" + delimiter);
+                foreach (StackLightType stacklight in model.Dictionnaries.StackLights)
+                {
+                    writer.Write(stacklight.Id);
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+                writer.Write("Description" + delimiter);
+                foreach (StackLightType stacklight in model.Dictionnaries.StackLights)
+                {
+                    writer.Write(stacklight.Description.ToString());
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+                writer.Write("StackLightState" + delimiter);
+                foreach (StackLightType stacklight in model.Dictionnaries.StackLights)
+                {
+                    if (stacklight.On == true)
+                    {
+                        writer.Write("TRUE");
+                    }
+                    else
+                    {
+                        writer.Write("FALSE");
+                    }
+                    writer.Write(delimiter);
+                }
+
+                writer.WriteLine("");
+
+                writer.WriteLine("");
+                writer.Write("CommandID" + delimiter);
+                foreach (ButtonType button in model.Dictionnaries.Buttons)
+                {
+                    for (int i = 0; i < button.Commands.Count; i++)
+                    {
+                        writer.Write(button.Id);
+                        writer.Write(delimiter);
+                    }
+                }
+
+
+                writer.WriteLine("");
+                writer.Write("CommandName" + delimiter);
+                foreach (ButtonType button in model.Dictionnaries.Buttons)
+                {
+                    for (int i = 0; i < button.Commands.Count; i++)
+                    {
+                        writer.Write(button.ButtonName);
+                        writer.Write(delimiter);
+                    }
+                }
+
+
+                writer.WriteLine("");
+                writer.Write("Actions" + delimiter);
+                foreach (ButtonType button in model.Dictionnaries.Buttons)
+                {
+                    foreach (Command c in button.Commands)
+                    {
+                        writer.Write(c);
+                        writer.Write(delimiter);
+                    }
+                }
+            }
+            return StatusCodes.Good;
         }
 
         /// <summary>
