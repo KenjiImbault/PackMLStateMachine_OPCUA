@@ -95,8 +95,8 @@ namespace FIP.PackMLStateMachine
                     y = 675;
                     break;
                 case 8:
-                    x = 1028;
-                    y = 675;
+                    x = 1208;
+                    y = 677;
                     break;
                 case 9:
                     x = 975;

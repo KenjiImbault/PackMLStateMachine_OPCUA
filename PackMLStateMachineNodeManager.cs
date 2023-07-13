@@ -102,7 +102,7 @@ namespace FIP.PackMLStateMachine
 
                 // Link model to node
                 UnitModel model = new UnitModel();
-                model.CurrentState = 1;
+                model.UpdateState(model, 1);
                 LinkModelToNode(node.NodeId, model, null, null, 500);
 
             }

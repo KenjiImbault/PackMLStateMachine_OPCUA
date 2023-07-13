@@ -1,0 +1,5 @@
+﻿AlarmsID,Commands,Message
+1,8,Abort
+2,8,Abort
+3,4,Hold - Error on material
+4,4,Hold - Error on glue
