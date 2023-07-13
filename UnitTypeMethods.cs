@@ -41,6 +41,7 @@
 using PackML_v0;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -55,6 +56,155 @@ namespace FIP.PackMLStateMachine
 {
     public partial class UnitModel : PackMLStateModelModel, IUnitMethods
     {
+
+        public void DrawStraightLine(Bitmap bitmap, Point p1, Point p2, Color color)
+        {
+            bool paint = false;
+            int exit = 0;
+
+            if(p1.X == p2.X)
+            {
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    for (int y = 0; y < bitmap.Height; y++)
+                    {
+                        if (y == p1.Y || y == p2.Y)
+                        {
+                            paint = !paint;
+                            exit++;
+                            if (exit == 2)
+                            {
+                                break;
+                            }
+                        }
+                        if (paint)
+                        {
+                            bitmap.SetPixel(x, y, color);
+                        }
+                    }
+                }
+            }
+            else if (p1.Y == p2.Y)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    for (int x = 0; x < bitmap.Width; x++)
+                    {
+                        if (x == p1.X || x == p2.X)
+                        {
+                            paint = !paint;
+                            exit++;
+                            if(exit==2)
+                            {
+                                break;
+                            }
+                        }
+                        if (paint)
+                        {
+                            bitmap.SetPixel(x, y, color);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Xs and Ys of pixel positions are both different: Impossible to draw a straight horizontal or vertical line");
+            }
+
+        }
+
+
+        public byte[] GenerateImage(string fpath, string newfpath, int state)
+        {
+            Image img = Image.FromFile(fpath);
+            int x = 0;
+            int y = 0;
+
+            switch(state)
+            {
+                case 1:
+                    x = 64;
+                    y = 236;
+                    break;
+                case 2:
+                    x = 64;
+                    y = 675;
+                    break;
+                case 3:
+                    x = 307;
+                    y = 236;
+                    break;
+                case 4:
+                    x = 640;
+                    y = 675;
+                    break;
+                case 5:
+                    x = 636;
+                    y = 454;
+                    break;
+                case 6:
+                    x = 636;
+                    y = 239;
+                    break;
+                case 7:
+                    x = 311;
+                    y = 675;
+                    break;
+                case 8:
+                    x = 1028;
+                    y = 675;
+                    break;
+                case 9:
+                    x = 975;
+                    y = 675;
+                    break;
+                case 10:
+                    x = 964;
+                    y = 54;
+                    break;
+                case 11:
+                    x = 620;
+                    y = 64;
+                    break;
+                case 12:
+                    x = 307;
+                    y = 54;
+                    break;
+                case 13:
+                    x = 964;
+                    y = 440;
+                    break;
+                case 14:
+                    x = 307;
+                    y = 440;
+                    break;
+                case 15:
+                    x = 64;
+                    y = 440;
+                    break;
+                case 16:
+                    x = 964;
+                    y = 235;
+                    break;
+                case 17:
+                    x = 1194;
+                    y = 235;
+                    break;
+
+            }
+            Pen pen = new Pen(Color.Red, 8);
+            using (Graphics g = Graphics.FromImage(img))
+                g.DrawRectangle(pen, x,y,181,122);
+            img.Save(newfpath);
+            return File.ReadAllBytes(newfpath);
+        }
+
+        public void UpdateState(UnitModel model, int state)
+        {
+            model.CurrentState = state;
+            GenerateImage(@"Data/image.jpg",@"Data/newImage.jpg",state);
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="context"></param>
@@ -385,20 +535,20 @@ namespace FIP.PackMLStateMachine
                 {
                     Task.Delay((int)process.SCTime);
                     unit.SafeMoveNext(Command.StateCompleted);
-                    model.CurrentState = (int)unit.CurrentState;
+                    UpdateState(model, (int) unit.CurrentState);
                 }
                 else
                 {
                     Task.Delay((int)process.CommandTime);
                     unit.SafeMoveNext((Command)process.Commands[i]);
-                    model.CurrentState = (int)unit.CurrentState;
+                    UpdateState(model, (int)unit.CurrentState);
                     i++;
                 }
                 if (i == process.Commands.Count)
                 {
                     Task.Delay((int)process.SCTime);
                     unit.SafeMoveNext(Command.StateCompleted);
-                    model.CurrentState = (int)unit.CurrentState;
+                    UpdateState(model, (int)unit.CurrentState);
 
                 }
             }
@@ -636,7 +786,7 @@ namespace FIP.PackMLStateMachine
                 }
             }
 
-            model.CurrentState = (int)stateMachine;
+            UpdateState(model, (int)stateMachine);
 
             return StatusCodes.Good;
         }
@@ -777,7 +927,8 @@ namespace FIP.PackMLStateMachine
             Unit temp = new Unit((State)model.CurrentState);
             if (temp.GetTransitions().TryGetValue(transition, out State nextState))
             {
-                model.CurrentState = (int)temp.MoveNext((Command)command);
+                UpdateState(model, (int)temp.MoveNext((Command)command));
+
                 return StatusCodes.Good;
             }
             return StatusCodes.BadInvalidState;
@@ -1003,6 +1154,9 @@ namespace FIP.PackMLStateMachine
                     newAlarm.AlarmTransition = alarm.AlarmTransition;
                     newAlarm.On = true;
                     alarmTypes.Add( newAlarm );
+
+                    SafeMoveNext(context, model, newAlarm.AlarmTransition);
+
                     changed = true;
                 }
                 else
@@ -1069,7 +1223,7 @@ namespace FIP.PackMLStateMachine
             unit.AddCommandMachine(1, "temp", commands);
             unit.TriggerCommandMachine(1);
 
-            model.CurrentState = (int)unit.CurrentState;
+            UpdateState(model, (int)unit.CurrentState);
 
             return StatusCodes.Good;
         }
