@@ -147,6 +147,19 @@ namespace FIP.PackMLStateMachine
         {
             model.CurrentState = state;
             model.MachineImage = GenerateImage(@"Data/image.jpg",@"Data/newImage.jpg",state);
+            ExecuteSC(model, 3000);
+        }
+
+        public void UpdateStateNoSC(UnitModel model, int state)
+        {
+            model.CurrentState = state;
+            model.MachineImage = GenerateImage(@"Data/image.jpg", @"Data/newImage.jpg", state);
+        }
+
+        public async void ExecuteSC(UnitModel model, int scTime)
+        {
+            await Task.Delay(scTime);
+            model.SafeMoveNext(null,model,11);
         }
 
         /// <summary>
@@ -456,6 +469,48 @@ namespace FIP.PackMLStateMachine
             return StatusCodes.Good;
         }
 
+
+        public async Task<int> ExecuteProcessHelper(RequestContext context,
+            UnitModel model,
+            ProcessType process
+            )
+        {
+            List<int> ints = new List<int>(process.Commands.ToList());
+
+            Unit unit = new Unit((State)model.CurrentState);
+
+            for(int j = 0; j<process.id;j++)
+            {
+
+            
+            int i = 0;
+            while (i < process.Commands.Count)
+            {
+                if (unit.IsCommandAvailable(Command.StateCompleted))
+                {
+                    await Task.Delay((int)process.SCTime);
+                    unit.SafeMoveNext(Command.StateCompleted);
+                    UpdateStateNoSC(model, (int)unit.CurrentState);
+                }
+                else
+                {
+                    await Task.Delay((int)process.CommandTime);
+                    unit.SafeMoveNext((Command)process.Commands[i]);
+                    UpdateStateNoSC(model, (int)unit.CurrentState);
+                    i++;
+                }
+                if (i == process.Commands.Count)
+                {
+                    await Task.Delay((int)process.SCTime);
+                    unit.SafeMoveNext(Command.StateCompleted);
+                    UpdateStateNoSC(model, (int)unit.CurrentState);
+
+                }
+            }
+            }
+            return 1;
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="context"></param>
@@ -468,34 +523,7 @@ namespace FIP.PackMLStateMachine
             ProcessType process
             )
         {
-            List<int> ints = new List<int>(process.Commands.ToList());
-
-            Unit unit = new Unit((State)model.CurrentState);
-
-            int i = 0;
-            while (i < process.Commands.Count)
-            {
-                if (unit.IsCommandAvailable(Command.StateCompleted))
-                {
-                    Task.Delay((int)process.SCTime);
-                    unit.SafeMoveNext(Command.StateCompleted);
-                    UpdateState(model, (int) unit.CurrentState);
-                }
-                else
-                {
-                    Task.Delay((int)process.CommandTime);
-                    unit.SafeMoveNext((Command)process.Commands[i]);
-                    UpdateState(model, (int)unit.CurrentState);
-                    i++;
-                }
-                if (i == process.Commands.Count)
-                {
-                    Task.Delay((int)process.SCTime);
-                    unit.SafeMoveNext(Command.StateCompleted);
-                    UpdateState(model, (int)unit.CurrentState);
-
-                }
-            }
+            ExecuteProcessHelper(context, model, process);
             return StatusCodes.Good;
         }
 
