@@ -47,6 +47,8 @@ using System.IO;
 using System.Reflection;
 using UnifiedAutomation.UaBase;
 using UnifiedAutomation.UaServer;
+using PackML_v0;
+
 namespace FIP.PackMLStateMachine
 {
     internal partial class PackMLStateMachineNodeManager : BaseNodeManager
@@ -89,13 +91,13 @@ namespace FIP.PackMLStateMachine
                 Console.WriteLine("Loading the PackMLStateMachine Model.");
                 ImportUaNodeset(Assembly.GetEntryAssembly(), "packmlmodel.xml");
 
-                // Create an instance of a machine
+                // Create an instance of a machine called "Machine1"
                 CreateObjectSettings settings = new CreateObjectSettings()
                 {
                     ParentNodeId = UnifiedAutomation.UaBase.ObjectIds.ObjectsFolder,
                     ReferenceTypeId = UnifiedAutomation.UaBase.ReferenceTypeIds.Organizes,
-                    RequestedNodeId = new NodeId("Machine", DefaultNamespaceIndex),
-                    BrowseName = new QualifiedName("Machine", DefaultNamespaceIndex),
+                    RequestedNodeId = new NodeId("Machine1", DefaultNamespaceIndex),
+                    BrowseName = new QualifiedName("Machine1", DefaultNamespaceIndex),
                     TypeDefinitionId = ObjectTypeIds.UnitType.ToNodeId(Server.NamespaceUris)
                 };
                 ObjectNode node = CreateObject(Server.DefaultRequestContext, settings);
@@ -105,6 +107,25 @@ namespace FIP.PackMLStateMachine
                 model.UpdateState(model, 1);
                 LinkModelToNode(node.NodeId, model, null, null, 500);
 
+                // Create an instance of a machine called "Machine2"
+                settings = new CreateObjectSettings()
+                {
+                    ParentNodeId = UnifiedAutomation.UaBase.ObjectIds.ObjectsFolder,
+                    ReferenceTypeId = UnifiedAutomation.UaBase.ReferenceTypeIds.Organizes,
+                    RequestedNodeId = new NodeId("Machine2", DefaultNamespaceIndex),
+                    BrowseName = new QualifiedName("Machine2", DefaultNamespaceIndex),
+                    TypeDefinitionId = ObjectTypeIds.UnitType.ToNodeId(Server.NamespaceUris)
+                };
+                node = CreateObject(Server.DefaultRequestContext, settings);
+
+                // Link model to node
+                UnitModel model2 = new UnitModel();
+                model2.UpdateState(model2, 1);
+                LinkModelToNode(node.NodeId, model2, null, null, 500);
+
+                DBManager db = new DBManager();
+                db.CreateDB();
+                db.Initialize();
             }
             catch (Exception e)
             {

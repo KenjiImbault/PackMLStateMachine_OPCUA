@@ -1,8 +1,8 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace PackML_v0
 {
@@ -53,7 +53,7 @@ namespace PackML_v0
 
     public class Unit : PackMLStateModel
     {
-        private DBManager db = new DBManager();
+        private readonly DBManager db = new DBManager();
 
         private readonly Dictionary<int, Alarm> alarms;
         private readonly Dictionary<Alarm, bool> dictAlarmState;
@@ -64,7 +64,7 @@ namespace PackML_v0
         private readonly Dictionary<int, CommandMachine> commandsMachine;
 
         private static int Id = 1;
-        public int machineID { get; private set; }
+        public int MachineID { get; private set; }
 
 
         private string MachineName { get; set; }
@@ -78,7 +78,7 @@ namespace PackML_v0
             dictStackLightState = new Dictionary<StackLight, bool>();
 
             commandsMachine = new Dictionary<int, CommandMachine>();
-            machineID = Id++;
+            MachineID = Id++;
             MachineName = "Machine";
         }
 
@@ -100,9 +100,9 @@ namespace PackML_v0
         public bool SafeMoveNext(Command command)
         {
             StateTransition transition = new StateTransition(CurrentState, command);
-            if (GetTransitions().TryGetValue(transition, out State nextState))
+            if (GetTransitions().TryGetValue(transition, out _))
             {
-                MoveNext(command);
+                _ = MoveNext(command);
                 return true;
             }
             return false;
@@ -116,18 +116,18 @@ namespace PackML_v0
                 if (IsCommandAvailable(Command.StateCompleted))
                 {
                     await Task.Delay(process.GetSCTime());
-                    SafeMoveNext(Command.StateCompleted);
+                    _ = SafeMoveNext(Command.StateCompleted);
                 }
                 else
                 {
                     await Task.Delay(process.GetCommandTime());
-                    SafeMoveNext(process.GetCommands()[i]);
+                    _ = SafeMoveNext(process.GetCommands()[i]);
                     i++;
                 }
                 if (i == process.GetCommands().Count)
                 {
                     await Task.Delay(process.GetSCTime());
-                    SafeMoveNext(Command.StateCompleted);
+                    _ = SafeMoveNext(Command.StateCompleted);
 
                 }
             }
@@ -143,7 +143,7 @@ namespace PackML_v0
         {
             if (alarms.ContainsKey(alarmId))
             {
-                alarms.Remove(alarmId);
+                _ = alarms.Remove(alarmId);
             }
         }
 
@@ -242,7 +242,7 @@ namespace PackML_v0
         {
             if (stackLights.ContainsKey(stacklightId))
             {
-                stackLights.Remove(stacklightId);
+                _ = stackLights.Remove(stacklightId);
             }
         }
 
@@ -349,7 +349,7 @@ namespace PackML_v0
         {
             if (commandsMachine.ContainsKey(commandID))
             {
-                commandsMachine.Remove(commandID);
+                _ = commandsMachine.Remove(commandID);
             }
         }
 
@@ -760,10 +760,11 @@ namespace PackML_v0
 
         public void SaveDataToDB()
         {
-            List<string> idAlarm = db.SelectMultipleCommand("SELECT idAlarm FROM Alarms WHERE idMachine = " + machineID, "idAlarm");
-            List<string> idButton = db.SelectMultipleCommand("SELECT idButton FROM Buttons WHERE idMachine = " + machineID, "idButton");
-            List<string> idStackLight = db.SelectMultipleCommand("SELECT idStackLight FROM StackLights WHERE idMachine = " + machineID, "idStackLight");
-            db.DeleteMachine(this.machineID);
+
+            List<string> idAlarm = db.SelectMultipleCommand("SELECT idAlarm FROM Alarms WHERE idMachine = " + MachineID, "idAlarm");
+            List<string> idButton = db.SelectMultipleCommand("SELECT idButton FROM Buttons WHERE idMachine = " + MachineID, "idButton");
+            List<string> idStackLight = db.SelectMultipleCommand("SELECT idStackLight FROM StackLights WHERE idMachine = " + MachineID, "idStackLight");
+            db.DeleteMachine(this.MachineID);
             if (idAlarm.Count > 0)
             {
                 db.AddMachine(this, idAlarm, idButton, idStackLight);
@@ -772,17 +773,16 @@ namespace PackML_v0
             {
                 db.AddMachine(this);
             }
-
         }
 
         public void ReadDataFromDB()
         {
-            SetMachineName(db.SelectSingleCommand("SELECT NameMachine FROM Machines WHERE idMachine = " + machineID));
+            SetMachineName(db.SelectSingleCommand("SELECT NameMachine FROM Machines WHERE idMachine = " + MachineID));
 
-            List<string> idAlarmMachineDB = db.SelectMultipleCommand("SELECT idAlarmMachine FROM Alarms WHERE idMachine = " + machineID, "idAlarmMachine");
-            List<string> messageAlarmDB = db.SelectMultipleCommand("SELECT MessageAlarm FROM Alarms WHERE idMachine = " + machineID, "MessageAlarm");
-            List<string> isAlarmTriggeredDB = db.SelectMultipleCommand("SELECT IsAlarmTriggered FROM Alarms WHERE idMachine = " + machineID, "isAlarmTriggered");
-            List<string> idCommandDB = db.SelectMultipleCommand("SELECT idCommand FROM Alarms WHERE idMachine = " + machineID, "idCommand");
+            List<string> idAlarmMachineDB = db.SelectMultipleCommand("SELECT idAlarmMachine FROM Alarms WHERE idMachine = " + MachineID, "idAlarmMachine");
+            List<string> messageAlarmDB = db.SelectMultipleCommand("SELECT MessageAlarm FROM Alarms WHERE idMachine = " + MachineID, "MessageAlarm");
+            List<string> isAlarmTriggeredDB = db.SelectMultipleCommand("SELECT IsAlarmTriggered FROM Alarms WHERE idMachine = " + MachineID, "isAlarmTriggered");
+            List<string> idCommandDB = db.SelectMultipleCommand("SELECT idCommand FROM Alarms WHERE idMachine = " + MachineID, "idCommand");
 
             RemoveAllAlarms();
 
@@ -791,13 +791,13 @@ namespace PackML_v0
                 AddAlarm(int.Parse(idAlarmMachineDB[i]), (Command)int.Parse(idCommandDB[i]), messageAlarmDB[i]);
                 if (int.Parse(isAlarmTriggeredDB[i]) == 1)
                 {
-                    TriggerAlarm(int.Parse(idAlarmMachineDB[i]));
+                    _ = TriggerAlarm(int.Parse(idAlarmMachineDB[i]));
                 }
             }
 
-            List<string> idStackLightDB = db.SelectMultipleCommand("SELECT idStackLightMachine FROM StackLights WHERE idMachine = " + machineID, "idStackLightMachine");
-            List<string> stackLightDescriptionDB = db.SelectMultipleCommand("SELECT StackLightDescription FROM StackLights WHERE idMachine = " + machineID, "StackLightDescription");
-            List<string> isStackLightTriggeredDB = db.SelectMultipleCommand("SELECT IsStackLightTriggered FROM StackLights WHERE idMachine = " + machineID, "IsStackLightTriggered");
+            List<string> idStackLightDB = db.SelectMultipleCommand("SELECT idStackLightMachine FROM StackLights WHERE idMachine = " + MachineID, "idStackLightMachine");
+            List<string> stackLightDescriptionDB = db.SelectMultipleCommand("SELECT StackLightDescription FROM StackLights WHERE idMachine = " + MachineID, "StackLightDescription");
+            List<string> isStackLightTriggeredDB = db.SelectMultipleCommand("SELECT IsStackLightTriggered FROM StackLights WHERE idMachine = " + MachineID, "IsStackLightTriggered");
 
             RemoveAllStackLight();
 
@@ -806,15 +806,15 @@ namespace PackML_v0
                 AddStackLight(int.Parse(idStackLightDB[i]), stackLightDescriptionDB[i]);
                 if (int.Parse(isStackLightTriggeredDB[i]) == 1)
                 {
-                    TriggerStackLight(int.Parse(idStackLightDB[i]));
+                    _ = TriggerStackLight(int.Parse(idStackLightDB[i]));
                 }
             }
 
-            List<string> idButtonsMachineDB = db.SelectMultipleCommand("SELECT idButtonsMachine FROM Buttons WHERE idMachine = " + machineID, "idButtonsMachine");
-            List<string> buttonNameDB = db.SelectMultipleCommand("SELECT ButtonName FROM Buttons WHERE idMachine = " + machineID, "ButtonName");
+            List<string> idButtonsMachineDB = db.SelectMultipleCommand("SELECT idButtonsMachine FROM Buttons WHERE idMachine = " + MachineID, "idButtonsMachine");
+            List<string> buttonNameDB = db.SelectMultipleCommand("SELECT ButtonName FROM Buttons WHERE idMachine = " + MachineID, "ButtonName");
 
-            List<string> idButtonDB = db.SelectMultipleCommand("SELECT Triggers.idButton FROM Triggers INNER JOIN Buttons WHERE Triggers.idButton = Buttons.idButton AND Buttons.idMachine =  " + machineID, "idButton");
-            List<string> idCommandTriggerDB = db.SelectMultipleCommand("SELECT Triggers.idCommand FROM Triggers INNER JOIN Buttons WHERE Triggers.idButton = Buttons.idButton AND Buttons.idMachine =  " + machineID, "idCommand");
+            List<string> idButtonDB = db.SelectMultipleCommand("SELECT Triggers.idButton FROM Triggers INNER JOIN Buttons WHERE Triggers.idButton = Buttons.idButton AND Buttons.idMachine =  " + MachineID, "idButton");
+            List<string> idCommandTriggerDB = db.SelectMultipleCommand("SELECT Triggers.idCommand FROM Triggers INNER JOIN Buttons WHERE Triggers.idButton = Buttons.idButton AND Buttons.idMachine =  " + MachineID, "idCommand");
 
             List<Command> commandDB = new List<Command>();
             List<List<Command>> commandsDB = new List<List<Command>>();
@@ -843,7 +843,12 @@ namespace PackML_v0
                 AddCommandMachine(int.Parse(idButtonsMachineDB[i]), buttonNameDB[i], commandsDB[i]);
             }
 
-            string commandVal = db.SelectSingleCommand("SELECT idState FROM Machines WHERE idMachine = " + machineID);
+            string commandVal = db.SelectSingleCommand("SELECT idState FROM Machines WHERE idMachine = " + MachineID);
+            if(commandVal == "")
+            {
+                Console.WriteLine("Error reading the Database: No state defined. Defaulting to IDLE state.");
+                commandVal = "1";
+            }
             SetState((State)int.Parse(commandVal));
 
             GC.Collect();

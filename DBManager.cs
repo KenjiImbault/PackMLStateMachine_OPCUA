@@ -45,11 +45,8 @@ namespace PackML_v0
                 }
                 connection.Close();
             }
-#pragma warning disable CS8603 // Possible null reference return.
-            return Convert.ToString(result) != null ? Convert.ToString(result) : "";
-#pragma warning restore CS8603 // Possible null reference return.
 
-
+            return Convert.ToString(result) ?? "";
         }
 
         public List<string> SelectMultipleCommand(string query, string column)
@@ -224,11 +221,11 @@ VACUUM;");
             using (SQLiteCommand update = new SQLiteCommand(updateCommand, connection))
             {
                 _ = update.Parameters.AddWithValue("@idStackLightMachine", idStackLightMachine);
-            _ = update.Parameters.AddWithValue("@StackLightDescription", description);
-            _ = update.Parameters.AddWithValue("@IsStackLightTriggered", triggered);
-            _ = update.Parameters.AddWithValue("@idMachine", idMachine);
-            _ = update.ExecuteNonQuery();
-            connection.Close();
+                _ = update.Parameters.AddWithValue("@StackLightDescription", description);
+                _ = update.Parameters.AddWithValue("@IsStackLightTriggered", triggered);
+                _ = update.Parameters.AddWithValue("@idMachine", idMachine);
+                _ = update.ExecuteNonQuery();
+                connection.Close();
             }
         }
 
@@ -271,7 +268,7 @@ VACUUM;");
             connection.Open();
             string insertCommand = @"INSERT INTO Machines (idMachine, NameMachine, idState) VALUES (@idMachine, @NameMachine, @idState);";
             SQLiteCommand insert = new SQLiteCommand(insertCommand, connection);
-            _ = insert.Parameters.AddWithValue("@idMachine", machine.machineID);
+            _ = insert.Parameters.AddWithValue("@idMachine", machine.MachineID);
             _ = insert.Parameters.AddWithValue("@NameMachine", machine.GetMachineName());
             _ = insert.Parameters.AddWithValue("@idState", (int)machine.CurrentState);
             _ = insert.ExecuteNonQuery();
@@ -285,7 +282,7 @@ VACUUM;");
             SQLiteCommand insert = new SQLiteCommand(insertCommand, connection);
             _ = insert.Parameters.AddWithValue("@idMachine", idMachine);
             _ = insert.Parameters.AddWithValue("@NameMachine", nameMachine);
-            _ = insert.Parameters.AddWithValue("@idState", (int)idState);
+            _ = insert.Parameters.AddWithValue("@idState", idState);
             _ = insert.ExecuteNonQuery();
             connection.Close();
         }

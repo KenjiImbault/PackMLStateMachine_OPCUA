@@ -57,7 +57,7 @@ namespace FIP.PackMLStateMachine
     public partial class UnitModel : PackMLStateModelModel, IUnitMethods
     {
 
-
+        private readonly DBManager db = new DBManager();
         public byte[] GenerateImage(string fpath, string newfpath, int state)
         {
             Image img = Image.FromFile(fpath);
@@ -523,7 +523,9 @@ namespace FIP.PackMLStateMachine
             ProcessType process
             )
         {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             ExecuteProcessHelper(context, model, process);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             return StatusCodes.Good;
         }
 
@@ -775,7 +777,51 @@ namespace FIP.PackMLStateMachine
             string DBFileName
             )
         {
-            return StatusCodes.BadNotImplemented;
+            model.Dictionnaries.Alarms = new AlarmType[] {};
+            model.Dictionnaries.StackLights = new StackLightType[] {};
+            model.Dictionnaries.Buttons = new ButtonType[] { };
+
+            Unit unit = new Unit((State) model.CurrentState);
+            unit.ReadDataFromDB();
+            foreach(int id in unit.GetAllAlarms().Keys)
+            {
+                AlarmType alarmType = new AlarmType();
+                alarmType.Id = id;
+                alarmType.AlarmMessage = unit.GetAlarm(id).Message;
+                alarmType.AlarmTransition = (int) unit.GetAlarm(id).Command;
+                alarmType.On = unit.IsAlarmOn(unit.GetAlarm(id));
+                model.AddAlarm(context, model, alarmType);
+            }
+
+            foreach (int id in unit.GetAllStackLights().Keys)
+            {
+                StackLightType stacklightType = new StackLightType();
+                stacklightType.Id = id;
+                stacklightType.Description = unit.GetStackLight(id).Description;
+                stacklightType.On = unit.IsStackLightOn(unit.GetStackLight(id));
+                model.AddStackLight(context, model, stacklightType);
+            }
+
+            foreach (int id in unit.GetAllCommandsMachine().Keys)
+            {
+                ButtonType buttonType = new ButtonType();
+                buttonType.Id = id;
+                buttonType.ButtonName = unit.GetCommandMachine(id).CommandMachineName;
+
+                List<int> commands = new List<int>();
+
+                foreach(int command in unit.GetCommandMachine(id).Commands)
+                {
+                    commands.Add(command);
+                }
+
+                buttonType.Commands = commands.ToArray();
+                model.AddButtons(context, model, buttonType);
+            }
+            model.CurrentState = (int) unit.CurrentState;
+            model.MachineName = unit.GetMachineName();
+
+            return StatusCodes.Good;
         }
 
         /// <summary>
@@ -1069,7 +1115,53 @@ namespace FIP.PackMLStateMachine
             string DBFileName
             )
         {
-            return StatusCodes.BadNotImplemented;
+            Unit unit = new Unit((State)model.CurrentState);
+
+            if(model.Dictionnaries.Alarms == null)
+            {
+                model.Dictionnaries.Alarms = new AlarmType[] { };
+            }
+            if (model.Dictionnaries.StackLights == null)
+            {
+                model.Dictionnaries.StackLights = new StackLightType[] { };
+            }
+            if (model.Dictionnaries.Buttons == null)
+            {
+                model.Dictionnaries.Buttons = new ButtonType[] { };
+            }
+
+            foreach (AlarmType alarmType in model.Dictionnaries.Alarms)
+            {
+                unit.AddAlarm(alarmType.Id, (Command) alarmType.AlarmTransition, alarmType.AlarmMessage);
+                if(alarmType.On)
+                {
+                    unit.TriggerAlarm(alarmType.Id);
+                }
+            }
+
+            foreach(StackLightType stacklightType in model.Dictionnaries.StackLights)
+            {
+                unit.AddStackLight(stacklightType.Id, stacklightType.Description);
+                if(stacklightType.On)
+                {
+                    unit.TriggerStackLight(stacklightType.Id);
+                }
+            }
+            
+            foreach(ButtonType buttonType in model.Dictionnaries.Buttons)
+            {
+                List<Command> commandsList = new List<Command>();
+                foreach (Command command in  buttonType.Commands)
+                {
+                    commandsList.Add(command);
+                }
+                unit.AddCommandMachine(buttonType.Id, buttonType.ButtonName, commandsList);
+            }
+
+            unit.SetMachineName(model.MachineName);
+            unit.SetState((State)model.CurrentState);
+            unit.SaveDataToDB();
+            return StatusCodes.Good;
         }
 
         /// <summary>

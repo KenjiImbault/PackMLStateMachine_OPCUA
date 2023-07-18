@@ -1,7 +1,8 @@
-﻿namespace PackML_v0
+﻿using System;
+using System.Collections.Generic;
+
+namespace PackML_v0
 {
-    using System;
-    using System.Collections.Generic;
     public enum State
     {
         IDLE = 1,
@@ -144,14 +145,9 @@
         public State GetNext(Command command)
         {
             StateTransition transition = new StateTransition(CurrentState, command);
-            if (Transitions.TryGetValue(transition, out State nextState))
-            {
-                return nextState;
-            }
-            else
-            {
-                throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
-            }
+            return Transitions.TryGetValue(transition, out State nextState)
+                ? nextState
+                : throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
         }
 
         public State MoveNext(Command command)
