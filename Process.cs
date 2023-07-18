@@ -1,6 +1,12 @@
 ﻿using System.Collections.Generic;
 namespace PackML_v0
 {
+    /// <summary>
+    /// Class <c>Process</c> models a process, which is a series of command to apply to a machine. (For example: Start -> Complete -> Reset)
+    /// It contains the list of commands to apply
+    /// The time needed to execute the StateComplete command (called SCtime)
+    /// The time needed to execute all the other commands (called CommandTime)
+    /// </summary>
     public class Process
     {
         private readonly List<Command> Commands;

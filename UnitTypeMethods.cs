@@ -56,15 +56,24 @@ namespace FIP.PackMLStateMachine
 {
     public partial class UnitModel : PackMLStateModelModel, IUnitMethods
     {
-
+        int SCTime = 3000;
         private readonly DBManager db = new DBManager();
+
+        /// <summary>
+        /// Generates the state machine image with the state surrounded with a red marker.
+        /// </summary>
+        /// <param name="fpath">The path of the blank file</param>
+        /// <param name="newfpath">The path of the new file to create</param>
+        /// <param name="state">The state to surround</param>
+        /// <returns>Returns the byte array of the new image</returns>
         public byte[] GenerateImage(string fpath, string newfpath, int state)
         {
             Image img = Image.FromFile(fpath);
             int x = 0;
             int y = 0;
 
-            switch(state)
+            // Choose the pixel position depending on the state of the machine.
+            switch (state)
             {
                 case 1:
                     x = 64;
@@ -136,37 +145,54 @@ namespace FIP.PackMLStateMachine
                     break;
 
             }
+
             Pen pen = new Pen(Color.Red, 8);
             using (Graphics g = Graphics.FromImage(img))
-                g.DrawRectangle(pen, x,y,181,122);
+                g.DrawRectangle(pen, x, y, 181, 122);
             img.Save(newfpath);
             return File.ReadAllBytes(newfpath);
         }
 
+        /// <summary>
+        /// Update the state of the machine. Also updates the image and will execute the StateComplete command after a certain time.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="state"></param>
         public void UpdateState(UnitModel model, int state)
         {
             model.CurrentState = state;
-            model.MachineImage = GenerateImage(@"Data/image.jpg",@"Data/newImage.jpg",state);
-            ExecuteSC(model, 3000);
+            model.MachineImage = GenerateImage(@"Data/image.jpg", @"Data/newImage.jpg", state);
+            ExecuteSC(model, SCTime);
         }
 
+        /// <summary>
+        /// Update the state of the machine. Also updates the image. Will NOT execute the StateComplete command after a certain time.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="state"></param>
         public void UpdateStateNoSC(UnitModel model, int state)
         {
             model.CurrentState = state;
             model.MachineImage = GenerateImage(@"Data/image.jpg", @"Data/newImage.jpg", state);
         }
 
+        /// <summary>
+        /// Execute StateCompleted after a certain time
+        /// </summary>
+        /// <param name="model">The model to apply the command</param>
+        /// <param name="scTime">The time to wait before executing the StateCompleted command</param>
         public async void ExecuteSC(UnitModel model, int scTime)
         {
             await Task.Delay(scTime);
-            model.SafeMoveNext(null,model,11);
+            model.SafeMoveNext(null, model, 11);
         }
 
         /// <summary>
+        /// Add an alarm to the machine. If the id of the alarm already exists, replace the existing one.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="alarm"></param>
+        /// <param name="alarm">The alarm to add</param>
         /// <returns></returns>
         public StatusCode AddAlarm(
             RequestContext context,
@@ -183,9 +209,11 @@ namespace FIP.PackMLStateMachine
             List<AlarmType> alarmsToList = new List<AlarmType>(model.Dictionnaries.Alarms.ToList());
 
             int key = 0;
-            foreach(AlarmType alarmT in alarmsToList)
+
+            //Check if the alarm exists
+            foreach (AlarmType alarmT in alarmsToList)
             {
-                if(alarmT.Id == alarm.Id)
+                if (alarmT.Id == alarm.Id)
                 {
                     idExists = true;
                     break;
@@ -193,11 +221,13 @@ namespace FIP.PackMLStateMachine
                 key++;
             }
 
-            if(idExists)
+            // If the alarm exists, replace the existing alarm
+            if (idExists)
             {
                 model.Dictionnaries.Alarms[key] = alarm;
                 return StatusCodes.GoodEntryReplaced;
             }
+            // Otherwise, add it to the list
             else
             {
                 alarmsToList.Add(alarm);
@@ -208,11 +238,12 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Read a well formated .csv file and add the alarms to the machine. See "_Template_Alarms.csv" in the Data folder to see how to correctly format a .csv file
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="fileName"></param>
-        /// <param name="delimiter"></param>
+        /// <param name="fileName">The name of the .csv file. You need to include the full name, extension included. (for example "alarmfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         /// <returns></returns>
         public StatusCode AddAlarmsFromCSV(
             RequestContext context,
@@ -228,7 +259,7 @@ namespace FIP.PackMLStateMachine
             int lineNumber = 1;
             using (StreamReader reader = new StreamReader(path))
             {
-
+                // Read each line containing the data for the alarms
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
@@ -243,7 +274,7 @@ namespace FIP.PackMLStateMachine
                 }
             }
 
-            
+            // Add the collected data to the machine
             for (int i = 0; i < alarmsID.Count; i++)
             {
                 AlarmType alarm = new AlarmType();
@@ -257,6 +288,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Add a button to the machine. If the id of the button already exists, replace the existing one.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -277,6 +309,8 @@ namespace FIP.PackMLStateMachine
             List<ButtonType> buttonsToList = new List<ButtonType>(model.Dictionnaries.Buttons.ToList());
 
             int key = 0;
+
+            // Check if the button exists
             foreach (ButtonType buttonT in buttonsToList)
             {
                 if (buttonT.Id == button.Id)
@@ -287,11 +321,13 @@ namespace FIP.PackMLStateMachine
                 key++;
             }
 
+            // If the button exists, replace the existing button
             if (idExists)
             {
                 model.Dictionnaries.Buttons[key] = button;
                 return StatusCodes.GoodEntryReplaced;
             }
+            // Otherwise, add it to the list
             else
             {
                 buttonsToList.Add(button);
@@ -302,11 +338,12 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Read a well formated .csv file and add the buttons to the machine. See "_Template_Commands.csv" in the Data folder to see how to correctly format a .csv file
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="fileName"></param>
-        /// <param name="delimiter"></param>
+        /// <param name="fileName">The name of the .csv file. You need to include the full name, extension included. (for example "buttonfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         /// <returns></returns>
         public StatusCode AddButtonsFromCSV(
             RequestContext context,
@@ -322,6 +359,8 @@ namespace FIP.PackMLStateMachine
             List<Command> actionsOfACommand = new List<Command>();
             List<List<Command>> actions = new List<List<Command>>();
 
+
+            // Read each line containing the data for the stack lights. For "simplicity", the data is read backwards (from bottom to top) 
             using (StreamReader reader = new StreamReader(path))
             {
                 Stack<string> lines = new Stack<string>();
@@ -381,6 +420,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Add a stack light to the machine. if the id of the stack light already exists, replace the existing one.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -401,6 +441,8 @@ namespace FIP.PackMLStateMachine
             List<StackLightType> stackLightsToList = new List<StackLightType>(model.Dictionnaries.StackLights.ToList());
 
             int key = 0;
+
+            // Check if the stack light exists
             foreach (StackLightType alarmT in stackLightsToList)
             {
                 if (alarmT.Id == stacklight.Id)
@@ -411,11 +453,13 @@ namespace FIP.PackMLStateMachine
                 key++;
             }
 
+            // If the stack light exists, replace the existing stack light
             if (idExists)
             {
                 model.Dictionnaries.StackLights[key] = stacklight;
                 return StatusCodes.GoodEntryReplaced;
             }
+            // Otherwise, add it to the list
             else
             {
                 stackLightsToList.Add(stacklight);
@@ -426,11 +470,12 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Read a well formated .csv file and add the stack lights to the machine. See "_Template_Stacklights.csv" in the Data folder to see how to correctly format a .csv file
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="fileName"></param>
-        /// <param name="delimiter"></param>
+        /// <param name="fileName">The name of the .csv file. You need to include the full name, extension included. (for example "stacklightfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         /// <returns></returns>
         public StatusCode AddStackLightsFromCSV(
             RequestContext context,
@@ -445,7 +490,7 @@ namespace FIP.PackMLStateMachine
             int lineNumber = 1;
             using (StreamReader reader = new StreamReader(path))
             {
-
+                // Read each line containing the data for the stack lights
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
@@ -458,6 +503,8 @@ namespace FIP.PackMLStateMachine
                     lineNumber++;
                 }
             }
+
+            // Add the collected data to the machine
             for (int i = 0; i < stacklightID.Count; i++)
             {
                 StackLightType stackLightType = new StackLightType();
@@ -469,7 +516,13 @@ namespace FIP.PackMLStateMachine
             return StatusCodes.Good;
         }
 
-
+        /// <summary>
+        /// Helper of the ExecuteProcess function. Made in a separate method to make the function async
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="model"></param>
+        /// <param name="process"></param>
+        /// <returns></returns>
         public async Task<int> ExecuteProcessHelper(RequestContext context,
             UnitModel model,
             ProcessType process
@@ -479,39 +532,41 @@ namespace FIP.PackMLStateMachine
 
             Unit unit = new Unit((State)model.CurrentState);
 
-            for(int j = 0; j<process.id;j++)
+            for (int j = 0; j < process.id; j++)
             {
+                int i = 0;
+                while (i < process.Commands.Count)
+                {
+                    // If it's possible to execute StateCompleted, execute it
+                    if (unit.IsCommandAvailable(Command.StateCompleted))
+                    {
+                        await Task.Delay((int)process.SCTime);
+                        unit.SafeMoveNext(Command.StateCompleted);
+                        UpdateStateNoSC(model, (int)unit.CurrentState);
+                    }
+                    // Otherwise execute the next command in the process
+                    else
+                    {
+                        await Task.Delay((int)process.CommandTime);
+                        unit.SafeMoveNext((Command)process.Commands[i]);
+                        UpdateStateNoSC(model, (int)unit.CurrentState);
+                        i++;
+                    }
+                    // If we finished executing the process, try to execute StateCompleted one more time after a certain amount of time
+                    if (i == process.Commands.Count)
+                    {
+                        await Task.Delay((int)process.SCTime);
+                        unit.SafeMoveNext(Command.StateCompleted);
+                        UpdateStateNoSC(model, (int)unit.CurrentState);
 
-            
-            int i = 0;
-            while (i < process.Commands.Count)
-            {
-                if (unit.IsCommandAvailable(Command.StateCompleted))
-                {
-                    await Task.Delay((int)process.SCTime);
-                    unit.SafeMoveNext(Command.StateCompleted);
-                    UpdateStateNoSC(model, (int)unit.CurrentState);
+                    }
                 }
-                else
-                {
-                    await Task.Delay((int)process.CommandTime);
-                    unit.SafeMoveNext((Command)process.Commands[i]);
-                    UpdateStateNoSC(model, (int)unit.CurrentState);
-                    i++;
-                }
-                if (i == process.Commands.Count)
-                {
-                    await Task.Delay((int)process.SCTime);
-                    unit.SafeMoveNext(Command.StateCompleted);
-                    UpdateStateNoSC(model, (int)unit.CurrentState);
-
-                }
-            }
             }
             return 1;
         }
 
         /// <summary>
+        /// Execute a process to the machine. The machine will execute the commands associated with the process one by one.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -530,11 +585,12 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Load the data from a .csv file to the machine. See "__Template_Machine.csv" in the Data folder to see how to format the file correctly.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="csvFileName"></param>
-        /// <param name="delimiter"></param>
+        /// <param name="csvFileName">The name of the .csv file. You need to include the full name, extension included. (for example "stacklightfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         /// <returns></returns>
         public StatusCode ReadDataFromCSV(
             RequestContext context,
@@ -570,7 +626,7 @@ namespace FIP.PackMLStateMachine
 
             using (StreamReader reader = new StreamReader(path))
             {
-
+                // Read data line by line
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
@@ -710,11 +766,14 @@ namespace FIP.PackMLStateMachine
             model.Dictionnaries.StackLights = new StackLightType[] { };
             model.Dictionnaries.Buttons = new ButtonType[] { };
 
+
+            // Add the data to the machine
+
             for (int i = 0; i < alarmsID.Count; i++)
             {
                 AlarmType alarm = new AlarmType();
                 alarm.Id = alarmsID[i];
-                alarm.AlarmTransition = (int) commands[i];
+                alarm.AlarmTransition = (int)commands[i];
                 alarm.AlarmMessage = messages[i];
                 AddAlarm(context, model, alarm);
             }
@@ -730,11 +789,11 @@ namespace FIP.PackMLStateMachine
             for (int i = 0; i < commandID.Count; i++)
             {
                 ButtonType buttonType = new ButtonType();
-                buttonType.Id= commandID[i];
+                buttonType.Id = commandID[i];
                 buttonType.ButtonName = commandName[i];
 
                 List<int> actionsInt = new List<int>();
-                foreach(int c in actions[i])
+                foreach (int c in actions[i])
                 {
                     actionsInt.Add(c);
                 }
@@ -766,6 +825,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Load the data from the database file into the machine. (This is broken)
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -777,18 +837,18 @@ namespace FIP.PackMLStateMachine
             string DBFileName
             )
         {
-            model.Dictionnaries.Alarms = new AlarmType[] {};
-            model.Dictionnaries.StackLights = new StackLightType[] {};
+            model.Dictionnaries.Alarms = new AlarmType[] { };
+            model.Dictionnaries.StackLights = new StackLightType[] { };
             model.Dictionnaries.Buttons = new ButtonType[] { };
 
-            Unit unit = new Unit((State) model.CurrentState);
+            Unit unit = new Unit((State)model.CurrentState);
             unit.ReadDataFromDB();
-            foreach(int id in unit.GetAllAlarms().Keys)
+            foreach (int id in unit.GetAllAlarms().Keys)
             {
                 AlarmType alarmType = new AlarmType();
                 alarmType.Id = id;
                 alarmType.AlarmMessage = unit.GetAlarm(id).Message;
-                alarmType.AlarmTransition = (int) unit.GetAlarm(id).Command;
+                alarmType.AlarmTransition = (int)unit.GetAlarm(id).Command;
                 alarmType.On = unit.IsAlarmOn(unit.GetAlarm(id));
                 model.AddAlarm(context, model, alarmType);
             }
@@ -810,7 +870,7 @@ namespace FIP.PackMLStateMachine
 
                 List<int> commands = new List<int>();
 
-                foreach(int command in unit.GetCommandMachine(id).Commands)
+                foreach (int command in unit.GetCommandMachine(id).Commands)
                 {
                     commands.Add(command);
                 }
@@ -818,17 +878,18 @@ namespace FIP.PackMLStateMachine
                 buttonType.Commands = commands.ToArray();
                 model.AddButtons(context, model, buttonType);
             }
-            model.CurrentState = (int) unit.CurrentState;
+            model.CurrentState = (int)unit.CurrentState;
             model.MachineName = unit.GetMachineName();
 
             return StatusCodes.Good;
         }
 
         /// <summary>
+        /// Remove an alarm from the machine.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="alarmID"></param>
+        /// <param name="alarmID">The id of the alarm to remove.</param>
         /// <returns></returns>
         public StatusCode RemoveAlarm(
             RequestContext context,
@@ -847,9 +908,9 @@ namespace FIP.PackMLStateMachine
 
             List<AlarmType> alarmTypes = model.Dictionnaries.Alarms.ToList();
 
-            foreach(AlarmType alarm in alarmTypes)
+            foreach (AlarmType alarm in alarmTypes)
             {
-                if(alarm.Id == alarmID)
+                if (alarm.Id == alarmID)
                 {
                     alarmTypes.Remove(alarm);
                     model.Dictionnaries.Alarms = alarmTypes.ToArray();
@@ -860,10 +921,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Remove a button from the machine.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="buttonID"></param>
+        /// <param name="buttonID">The id of the button to remove</param>
         /// <returns></returns>
         public StatusCode RemoveButton(
             RequestContext context,
@@ -895,10 +957,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Remove a stack light from the machine.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="stacklightID"></param>
+        /// <param name="stacklightID">The id of the stack light to remove</param>
         /// <returns></returns>
         public StatusCode RemoveStackLight(
             RequestContext context,
@@ -930,10 +993,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Applies a command to a State Machine. If a command is not applicable to a State Machine in it's current state, do nothing.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="command"></param>
+        /// <param name="command">The command to apply</param>
         /// <returns></returns>
         public StatusCode SafeMoveNext(
             RequestContext context,
@@ -953,11 +1017,12 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Save the data of the machine to a .csv file.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="csvFileName"></param>
-        /// <param name="delimiter"></param>
+        /// <param name="csvFileName">The name of the csv file to save as. (for example "data.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         /// <returns></returns>
         public StatusCode SaveDataToCSV(
             RequestContext context,
@@ -966,8 +1031,8 @@ namespace FIP.PackMLStateMachine
             string delimiter
             )
         {
-            AlarmType[] tempAlarm = new AlarmType[] {};
-            if(model.Dictionnaries.Alarms == null)
+            AlarmType[] tempAlarm = new AlarmType[] { };
+            if (model.Dictionnaries.Alarms == null)
             {
                 model.Dictionnaries.Alarms = tempAlarm;
             }
@@ -990,7 +1055,7 @@ namespace FIP.PackMLStateMachine
             {
 
                 writer.WriteLine("Machine name" + delimiter + MachineName);
-                writer.WriteLine("State" + delimiter + (State) CurrentState);
+                writer.WriteLine("State" + delimiter + (State)CurrentState);
                 writer.WriteLine("");
 
                 writer.Write("AlarmsID" + delimiter);
@@ -1004,7 +1069,7 @@ namespace FIP.PackMLStateMachine
                 writer.Write("Command" + delimiter);
                 foreach (AlarmType alarm in model.Dictionnaries.Alarms)
                 {
-                    writer.Write((Command) alarm.AlarmTransition);
+                    writer.Write((Command)alarm.AlarmTransition);
                     writer.Write(delimiter);
                 }
 
@@ -1104,6 +1169,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Save the data of the machine to a database file. (This may be broken)
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -1117,7 +1183,7 @@ namespace FIP.PackMLStateMachine
         {
             Unit unit = new Unit((State)model.CurrentState);
 
-            if(model.Dictionnaries.Alarms == null)
+            if (model.Dictionnaries.Alarms == null)
             {
                 model.Dictionnaries.Alarms = new AlarmType[] { };
             }
@@ -1132,26 +1198,26 @@ namespace FIP.PackMLStateMachine
 
             foreach (AlarmType alarmType in model.Dictionnaries.Alarms)
             {
-                unit.AddAlarm(alarmType.Id, (Command) alarmType.AlarmTransition, alarmType.AlarmMessage);
-                if(alarmType.On)
+                unit.AddAlarm(alarmType.Id, (Command)alarmType.AlarmTransition, alarmType.AlarmMessage);
+                if (alarmType.On)
                 {
                     unit.TriggerAlarm(alarmType.Id);
                 }
             }
 
-            foreach(StackLightType stacklightType in model.Dictionnaries.StackLights)
+            foreach (StackLightType stacklightType in model.Dictionnaries.StackLights)
             {
                 unit.AddStackLight(stacklightType.Id, stacklightType.Description);
-                if(stacklightType.On)
+                if (stacklightType.On)
                 {
                     unit.TriggerStackLight(stacklightType.Id);
                 }
             }
-            
-            foreach(ButtonType buttonType in model.Dictionnaries.Buttons)
+
+            foreach (ButtonType buttonType in model.Dictionnaries.Buttons)
             {
                 List<Command> commandsList = new List<Command>();
-                foreach (Command command in  buttonType.Commands)
+                foreach (Command command in buttonType.Commands)
                 {
                     commandsList.Add(command);
                 }
@@ -1181,10 +1247,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Triggers an alarm. This will change the state of the alarm to ON and try to change the state of the machine.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="alarmID"></param>
+        /// <param name="alarmID">The ID of the alarm to trigger</param>
         /// <returns></returns>
         public StatusCode TriggerAlarm(
             RequestContext context,
@@ -1214,7 +1281,7 @@ namespace FIP.PackMLStateMachine
                     newAlarm.AlarmMessage = alarm.AlarmMessage;
                     newAlarm.AlarmTransition = alarm.AlarmTransition;
                     newAlarm.On = true;
-                    alarmTypes.Add( newAlarm );
+                    alarmTypes.Add(newAlarm);
 
                     SafeMoveNext(context, model, newAlarm.AlarmTransition);
 
@@ -1225,7 +1292,7 @@ namespace FIP.PackMLStateMachine
                     alarmTypes.Add(alarm);
                 }
             }
-            if(changed==false)
+            if (changed == false)
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
@@ -1235,11 +1302,12 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Triggers a button.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
         /// <param name="buttonID"></param>
-        /// <returns></returns>
+        /// <returns>ID of the button to trigger</returns>
         public StatusCode TriggerButton(
             RequestContext context,
             UnitModel model,
@@ -1258,11 +1326,11 @@ namespace FIP.PackMLStateMachine
             bool changed = false;
             List<Command> commands = new List<Command>();
 
-            foreach(ButtonType button in model.Dictionnaries.Buttons)
+            foreach (ButtonType button in model.Dictionnaries.Buttons)
             {
-                if(button.Id == buttonID)
+                if (button.Id == buttonID)
                 {
-                    foreach(Command command in button.Commands)
+                    foreach (Command command in button.Commands)
                     {
                         commands.Add(command);
                     }
@@ -1271,7 +1339,7 @@ namespace FIP.PackMLStateMachine
                 }
             }
 
-            if(changed == false)
+            if (changed == false)
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
@@ -1286,10 +1354,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Triggers a stack light. This will change the state of the stack light to ON.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="stacklightID"></param>
+        /// <param name="stacklightID">ID of the stack light to trigger</param>
         /// <returns></returns>
         public StatusCode TriggerStackLight(
             RequestContext context,
@@ -1335,10 +1404,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Sets the state of the alarm to OFF
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="alarmID"></param>
+        /// <param name="alarmID">ID of the alarm to turn off</param>
         /// <returns></returns>
         public StatusCode UntriggerAlarm(
             RequestContext context,
@@ -1386,10 +1456,11 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Sets the state of the stack light to OFF
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
-        /// <param name="stacklightID"></param>
+        /// <param name="stacklightID">ID of the stack light to turn off</param>
         /// <returns></returns>
         public StatusCode UntriggerStackLight(
             RequestContext context,

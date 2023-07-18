@@ -53,6 +53,7 @@ namespace FIP.PackMLStateMachine
     {
 
         /// <summary>
+        /// Get the available commands from the current state of the machine as a list.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -74,6 +75,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Returns what would be the next state if we applied the given command. Throws an exception if the command is not applicable.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -93,6 +95,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Returns true if the command is applicable, return false otherwise.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -112,6 +115,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Applies a command to a State Machine. If a command is not appliable to a State Machine in it's current state, throws an exception.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>
@@ -132,6 +136,7 @@ namespace FIP.PackMLStateMachine
         }
 
         /// <summary>
+        /// Changes the state of the state machine to the given state.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="model"></param>

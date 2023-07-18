@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace PackML_v0
 {
+    /// <summary>
+    /// Represent the different possible states of a machine. The values are taken from the PackML documentation.
+    /// </summary>
     public enum State
     {
         IDLE = 1,
@@ -24,7 +27,9 @@ namespace PackML_v0
         COMPLETED = 17
     }
 
-
+    /// <summary>
+    /// Represent the different possible commands that can be applied to a machine. The values are taken from the PackML documentation.
+    /// </summary>
     public enum Command
     {
         StateCompleted = 11,
@@ -40,8 +45,14 @@ namespace PackML_v0
         Complete = 10
     }
 
+    /// <summary>
+    /// The class <c>PackMLStateModel</c> models a PackML State Machine.
+    /// </summary>
     public class PackMLStateModel
     {
+        /// <summary>
+        /// The class <c>StateTransition</c> models a command that can be applied to a certain state.
+        /// </summary>
         public class StateTransition
         {
             private readonly State CurrentState;
@@ -142,6 +153,12 @@ namespace PackML_v0
             CurrentState = state;
         }
 
+        /// <summary>
+        /// Returns what would be the next state if we applied the given command. Throws an exception if the command is not applicable.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public State GetNext(Command command)
         {
             StateTransition transition = new StateTransition(CurrentState, command);
@@ -150,12 +167,21 @@ namespace PackML_v0
                 : throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
         }
 
+        /// <summary>
+        /// Applies a command to a State Machine. If a command is not appliable to a State Machine in it's current state, throws an exception.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public State MoveNext(Command command)
         {
             CurrentState = GetNext(command);
             return CurrentState;
         }
 
+        /// <summary>
+        /// Get the available commands from the current state of the machine as a list.
+        /// </summary>
+        /// <returns></returns>
         public List<Command> GetAvailableCommands()
         {
             List<Command> commands = new List<Command>();

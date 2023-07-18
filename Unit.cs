@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace PackML_v0
 {
-
+    /// <summary>
+    /// Class <c>Alarm</c> models an alarm.
+    /// It contains the command to execute once the alarm is triggered (for example: "Abort")
+    /// And the message associated to the alarm (for example: "Aborting: Error")
+    /// </summary>
     public class Alarm
     {
         public Command Command { get; set; }
@@ -23,7 +27,10 @@ namespace PackML_v0
             return this == null ? string.Empty : Message;
         }
     }
-
+    /// <summary>
+    /// Class <c>StackLight</c> models a stack light.
+    /// It contains the description of the stack light (for example: "Blue light", or "Loud Horn")
+    /// </summary>
     public class StackLight
     {
         public string Description { get; set; }
@@ -39,6 +46,11 @@ namespace PackML_v0
         }
     }
 
+    /// <summary>
+    /// Class <c>CommandMachine</c> models a button that can interact with the machine. The button can be a physical button or a button on a GUI.
+    /// It contains the name of the button (for example: "Start/Stop")
+    /// And it contains the commands associated with the button (for example: {Start, Stop})
+    /// </summary>
     public class CommandMachine
     {
         public string CommandMachineName { get; set; }
@@ -51,21 +63,29 @@ namespace PackML_v0
         }
     }
 
+    /// <summary>
+    /// Class <c>Unit</c> models a machine.
+    /// This machine has an ID, a name, a state machine, and a state
+    /// It may or may not contain alarms, stacklights and/or buttons
+    /// </summary>
     public class Unit : PackMLStateModel
     {
         private readonly DBManager db = new DBManager();
 
         private readonly Dictionary<int, Alarm> alarms;
+
+        // Represents the state of the alarms (on/off).
         private readonly Dictionary<Alarm, bool> dictAlarmState;
 
         private readonly Dictionary<int, StackLight> stackLights;
+
+        // Represents the state of the stacklights (on/off).
         private readonly Dictionary<StackLight, bool> dictStackLightState;
 
         private readonly Dictionary<int, CommandMachine> commandsMachine;
 
         private static int Id = 1;
         public int MachineID { get; private set; }
-
 
         private string MachineName { get; set; }
 
@@ -97,6 +117,11 @@ namespace PackML_v0
             return MachineName;
         }
 
+        /// <summary>
+        /// Applies a command to a State Machine. If a command is not applicable to a State Machine in it's current state, do nothing.
+        /// </summary>
+        /// <param name="command">The command to apply</param>
+        /// <returns>Returns true if successfuly applied the command. False otherwise.</returns>
         public bool SafeMoveNext(Command command)
         {
             StateTransition transition = new StateTransition(CurrentState, command);
@@ -108,6 +133,11 @@ namespace PackML_v0
             return false;
         }
 
+        /// <summary>
+        /// Execute a process to the machine. The machine will execute the commands associated with the process one by one.
+        /// </summary>
+        /// <param name="process"></param>
+        /// <returns></returns>
         public async Task ExecuteProcess(Process process)
         {
             int i = 0;
@@ -133,12 +163,22 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Add an alarm to the machine. If the id of the alarm already exists, replace the existing one.
+        /// </summary>
+        /// <param name="alarmId">The id of the alarm to add or to replace</param>
+        /// <param name="command">The command to apply to the machine if the alarm is triggered.</param>
+        /// <param name="message">The message associated with the alarm</param>
         public void AddAlarm(int alarmId, Command command, string message)
         {
             Alarm alarm = new Alarm(command, message);
             alarms[alarmId] = alarm;
         }
 
+        /// <summary>
+        /// Remove an alarm from the machine.
+        /// </summary>
+        /// <param name="alarmId">The id of the alarm to remove.</param>
         public void RemoveAlarm(int alarmId)
         {
             if (alarms.ContainsKey(alarmId))
@@ -147,17 +187,30 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Returns the alarm with a given id
+        /// </summary>
+        /// <param name="alarmId">The id of the alarm to return</param>
+        /// <returns></returns>
         public Alarm GetAlarm(int alarmId)
         {
             return alarms[alarmId];
         }
 
+        /// <summary>
+        /// Remove all the alarms from the machine.
+        /// </summary>
         public void RemoveAllAlarms()
         {
             alarms.Clear();
             dictAlarmState.Clear();
         }
 
+        /// <summary>
+        /// Read a well formated .csv file and add the alarms to the machine. See "_Template_Alarms.csv" in the Data folder to see how to correctly format a .csv file
+        /// </summary>
+        /// <param name="csvFileName">The name of the .csv file. You need to include the full name, extension included. (for example "alarmfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         public void AddAlarmsFromCSV(string csvFileName, char delimiter)
         {
             string path = @"Data/" + csvFileName;
@@ -187,6 +240,12 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Triggers an alarm. This will change the state of the alarm to ON, try to change the state of the machine, and return the message of the alarm
+        /// </summary>
+        /// <param name="alarmId">ID of the alarm to trigger</param>
+        /// <returns>Returns the message of the alarm</returns>
+        /// <exception cref="Exception">Throws when the given id does not have an associated alarm</exception>
         public string TriggerAlarm(int alarmId)
         {
             if (alarms.TryGetValue(alarmId, out Alarm alarm))
@@ -202,6 +261,11 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Sets the state of the alarm to OFF
+        /// </summary>
+        /// <param name="alarmId">ID of the alarm to turn off</param>
+        /// <exception cref="Exception">Throws when the given id does not have an associated alarm</exception>
         public void UntriggerAlarm(int alarmId)
         {
             _ = alarms.TryGetValue(alarmId, out Alarm alarm)
@@ -222,6 +286,7 @@ namespace PackML_v0
             return triggeredAlarms;
         }
 
+
         public bool IsAlarmOn(Alarm alarm)
         {
             return GetTriggeredAlarms().Contains(alarm);
@@ -232,12 +297,21 @@ namespace PackML_v0
             return alarms;
         }
 
+        /// <summary>
+        /// Add a stack light to the machine. if the id of the stack light already exists, replace the existing one.
+        /// </summary>
+        /// <param name="stackLightId">The id of the stack light to add or to replace</param>
+        /// <param name="description">The description associated with the alarm</param>
         public void AddStackLight(int stackLightId, string description)
         {
             StackLight stacklight = new StackLight(description);
             stackLights[stackLightId] = stacklight;
         }
 
+        /// <summary>
+        /// Remove a stack light from the machine
+        /// </summary>
+        /// <param name="stacklightId">The id of the stack light to remove</param>
         public void RemoveStackLight(int stacklightId)
         {
             if (stackLights.ContainsKey(stacklightId))
@@ -246,17 +320,30 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Remove all the stack lights from the machine
+        /// </summary>
         public void RemoveAllStackLight()
         {
             stackLights.Clear();
             dictStackLightState.Clear();
         }
 
+        /// <summary>
+        /// Returns the stack light with a given id
+        /// </summary>
+        /// <param name="stacklightId">The id of the stack light to return</param>
+        /// <returns></returns>
         public StackLight GetStackLight(int stacklightId)
         {
             return stackLights[stacklightId];
         }
 
+        /// <summary>
+        /// Read a well formated .csv file and add the stack lights to the machine. See "_Template_Stacklights.csv" in the Data folder to see how to correctly format a .csv file
+        /// </summary>
+        /// <param name="csvFileName">The name of the .csv file. You need to include the full name, extension included. (for example "stacklightfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         public void AddStackLightsFromCSV(string csvFileName, char delimiter)
         {
             string path = @"Data/" + csvFileName;
@@ -284,6 +371,12 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Triggers a stack light. This will change the state of the stack light to ON and return the description of the stack light.
+        /// </summary>
+        /// <param name="stackLightId">The ID of the stack light to trigger</param>
+        /// <returns>Returns the description of the stack light</returns>
+        /// <exception cref="Exception">Throws when the given id does not have an associated stack light</exception>
         public string TriggerStackLight(int stackLightId)
         {
             if (stackLights.TryGetValue(stackLightId, out StackLight stackLight))
@@ -297,6 +390,11 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Sets the state of the stack light to OFF
+        /// </summary>
+        /// <param name="stackLightId">ID of the stack light to turn off</param>
+        /// <exception cref="Exception">Throws when the given id ddoes not have an associated stack light</exception>
         public void UntriggerStackLight(int stackLightId)
         {
             _ = stackLights.TryGetValue(stackLightId, out StackLight stackLight)
@@ -339,12 +437,22 @@ namespace PackML_v0
             return GetTriggeredStackLights().Contains(stacklight);
         }
 
+        /// <summary>
+        /// Add a button to the machine. If the id of the button already exists, replace the existing one.
+        /// </summary>
+        /// <param name="commandID">The id of the button to add or to replace</param>
+        /// <param name="commandName">The name of the button</param>
+        /// <param name="commands">The commands associated with the button</param>
         public void AddCommandMachine(int commandID, string commandName, List<Command> commands)
         {
             CommandMachine commandMachine = new CommandMachine(commandName, commands);
             commandsMachine[commandID] = commandMachine;
         }
 
+        /// <summary>
+        /// Remove a button from the machine.
+        /// </summary>
+        /// <param name="commandID">The id of the button to remove.</param>
         public void RemoveCommandMachine(int commandID)
         {
             if (commandsMachine.ContainsKey(commandID))
@@ -358,11 +466,21 @@ namespace PackML_v0
             commandsMachine.Clear();
         }
 
+        /// <summary>
+        /// Returns the button with a given id
+        /// </summary>
+        /// <param name="commandID">The id of the button to return.</param>
+        /// <returns></returns>
         public CommandMachine GetCommandMachine(int commandID)
         {
             return commandsMachine[commandID];
         }
 
+        /// <summary>
+        /// Read a well formated .csv file and add the buttons to the machine. See "_Template_Commands.csv" in the Data folder to see how to correctly format a .csv file
+        /// </summary>
+        /// <param name="csvFileName">The name of the .csv file. You need to include the full name, extension included. (for example "buttonfile.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         public void AddCommandsMachineFromCSV(string csvFileName, char delimiter)
         {
 
@@ -410,6 +528,10 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Triggers a button.
+        /// </summary>
+        /// <param name="commandID">ID of the button to trigger</param>
         public void TriggerCommandMachine(int commandID)
         {
             foreach (Command command in commandsMachine[commandID].Commands)
@@ -432,20 +554,24 @@ namespace PackML_v0
             return commandsMachine[commandID].CommandMachineName;
         }
 
+        /// <summary>
+        /// Save the data of the machine to a .csv file.
+        /// </summary>
+        /// <param name="csvFileName">The name of the csv file to save as. (for example "data.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         public void SaveDataToCSV(string csvFileName, char delimiter)
         {
-
+            //The path of the file. Located in the Data folder.
             string path = @"Data/" + csvFileName;
 
             using (StreamWriter writer = new StreamWriter(path))
             {
-
-
-
+                //Will write the first few lines containing the name of the machine and the state of the machine.
                 writer.WriteLine("Machine name" + delimiter + MachineName);
                 writer.WriteLine("State" + delimiter + CurrentState);
                 writer.WriteLine("");
 
+                // Write the alarm ID on one single line
                 writer.Write("AlarmsID" + delimiter);
                 foreach (int key in alarms.Keys)
                 {
@@ -453,6 +579,7 @@ namespace PackML_v0
                     writer.Write(delimiter);
                 }
 
+                // Write the command of the alarms on one single line
                 writer.WriteLine("");
                 writer.Write("Command" + delimiter);
                 foreach (int key in alarms.Keys)
@@ -461,6 +588,7 @@ namespace PackML_v0
                     writer.Write(delimiter);
                 }
 
+                // Write the message of the alamrs on one single line
                 writer.WriteLine("");
                 writer.Write("Message" + delimiter);
                 foreach (int key in alarms.Keys)
@@ -468,7 +596,8 @@ namespace PackML_v0
                     writer.Write(alarms[key].Message.ToString());
                     writer.Write(delimiter);
                 }
-
+                
+                // Write the state of the alarm on one single line
                 writer.WriteLine("");
                 writer.Write("AlarmState" + delimiter);
                 foreach (Alarm alarm in alarms.Values)
@@ -484,6 +613,7 @@ namespace PackML_v0
                     writer.Write(delimiter);
                 }
 
+                // Write the ID of the stack lights on one single line
                 writer.WriteLine("");
                 writer.WriteLine("");
                 writer.Write("StackLightID" + delimiter);
@@ -493,6 +623,7 @@ namespace PackML_v0
                     writer.Write(delimiter);
                 }
 
+                // Write the description of the stack lights on one single line
                 writer.WriteLine("");
                 writer.Write("Description" + delimiter);
                 foreach (int key in stackLights.Keys)
@@ -501,6 +632,7 @@ namespace PackML_v0
                     writer.Write(delimiter);
                 }
 
+                // Write the state of the stack lights on one single line
                 writer.WriteLine("");
                 writer.Write("StackLightState" + delimiter);
                 foreach (StackLight stacklight in stackLights.Values)
@@ -518,6 +650,7 @@ namespace PackML_v0
 
                 writer.WriteLine("");
 
+                // Write the ID of the buttons on one single line
                 writer.WriteLine("");
                 writer.Write("CommandID" + delimiter);
                 foreach (int key in commandsMachine.Keys)
@@ -529,7 +662,7 @@ namespace PackML_v0
                     }
                 }
 
-
+                // Write the name of the buttons on one single line
                 writer.WriteLine("");
                 writer.Write("CommandName" + delimiter);
                 foreach (int key in commandsMachine.Keys)
@@ -541,7 +674,7 @@ namespace PackML_v0
                     }
                 }
 
-
+                // Write the actions of the buttons on one single line
                 writer.WriteLine("");
                 writer.Write("Actions" + delimiter);
                 foreach (int key in commandsMachine.Keys)
@@ -555,6 +688,11 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Load the data from a .csv file to the machine. See "__Template_Machine.csv" in the Data folder to see how to format the file correctly.
+        /// </summary>
+        /// <param name="csvFileName">The name of the .csv file. You need to include the full name, extension included. (for example "data.csv")</param>
+        /// <param name="delimiter">The delimiter of the .csv file. Usually a comma</param>
         public void ReadDataFromCSV(string csvFileName, char delimiter)
         {
             string path = @"Data/" + csvFileName;
@@ -581,6 +719,7 @@ namespace PackML_v0
             Dictionary<int, int> howManyActionsInThisID = new Dictionary<int, int>();
             int actionsNum = 0;
 
+
             using (StreamReader reader = new StreamReader(path))
             {
 
@@ -589,6 +728,8 @@ namespace PackML_v0
                     string line = reader.ReadLine();
                     string[] values = line != null ? line.Split(delimiter) : Array.Empty<string>();
                     numberOfLine++;
+                    
+                    // Read the number of the line given.
                     switch (numberOfLine)
                     {
                         case 1:
@@ -719,10 +860,12 @@ namespace PackML_v0
                 }
             }
 
+            // Remove all specifications from the machine
             RemoveAllAlarms();
             RemoveAllStackLight();
             RemoveAllCommandMachine();
 
+            // Add the new specifiations to the machine
             for (int i = 0; i < alarmsID.Count; i++)
             {
                 AddAlarm(alarmsID[i], commands[i], messages[i]);
@@ -758,6 +901,9 @@ namespace PackML_v0
 
         }
 
+        /// <summary>
+        /// Save the data of the machine to a database file. (This may be broken)
+        /// </summary>
         public void SaveDataToDB()
         {
 
@@ -775,6 +921,9 @@ namespace PackML_v0
             }
         }
 
+        /// <summary>
+        /// Load the data from the database file into the machine. (This is broken)
+        /// </summary>
         public void ReadDataFromDB()
         {
             SetMachineName(db.SelectSingleCommand("SELECT NameMachine FROM Machines WHERE idMachine = " + MachineID));
