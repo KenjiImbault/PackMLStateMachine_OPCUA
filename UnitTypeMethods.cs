@@ -1200,10 +1200,7 @@ namespace FIP.PackMLStateMachine
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
-            if(alarmID>model.Dictionnaries.Alarms.Count())
-            {
-                return StatusCodes.BadIndexRangeNoData;
-            }
+
 
             bool changed = false;
             List<AlarmType> alarmTypes = new List<AlarmType>();
@@ -1254,10 +1251,6 @@ namespace FIP.PackMLStateMachine
                 return StatusCodes.BadIndexRangeNoData;
             }
             if (model.Dictionnaries.Buttons == null)
-            {
-                return StatusCodes.BadIndexRangeNoData;
-            }
-            if (buttonID > model.Dictionnaries.Buttons.Count())
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
@@ -1312,10 +1305,6 @@ namespace FIP.PackMLStateMachine
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
-            if (stacklightID > model.Dictionnaries.StackLights.Count())
-            {
-                return StatusCodes.BadIndexRangeNoData;
-            }
 
             bool changed = false;
             List<StackLightType> stacklightTypes = new List<StackLightType>();
@@ -1362,10 +1351,6 @@ namespace FIP.PackMLStateMachine
                 return StatusCodes.BadIndexRangeNoData;
             }
             if (model.Dictionnaries.Alarms == null)
-            {
-                return StatusCodes.BadIndexRangeNoData;
-            }
-            if (alarmID > model.Dictionnaries.Alarms.Count())
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
@@ -1417,10 +1402,6 @@ namespace FIP.PackMLStateMachine
                 return StatusCodes.BadIndexRangeNoData;
             }
             if (model.Dictionnaries.StackLights == null)
-            {
-                return StatusCodes.BadIndexRangeNoData;
-            }
-            if (stacklightID > model.Dictionnaries.StackLights.Count())
             {
                 return StatusCodes.BadIndexRangeNoData;
             }
