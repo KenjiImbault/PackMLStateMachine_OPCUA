@@ -103,29 +103,35 @@ namespace FIP.PackMLStateMachine
                 ObjectNode node = CreateObject(Server.DefaultRequestContext, settings);
 
                 // Link model to node
-                UnitModel model = new UnitModel();
-                model.UpdateState(model, 1);
-                LinkModelToNode(node.NodeId, model, null, null, 500);
+                UnitModel Machine1Model = new UnitModel();
+                Machine1Model.UpdateState(Machine1Model, 1);
+                LinkModelToNode(node.NodeId, Machine1Model, null, null, 500);
 
-                // Create an instance of a machine called "Machine2"
+
+                /*
+                // Create an instance of a machine called "MachineInstance"
                 settings = new CreateObjectSettings()
                 {
                     ParentNodeId = UnifiedAutomation.UaBase.ObjectIds.ObjectsFolder,
                     ReferenceTypeId = UnifiedAutomation.UaBase.ReferenceTypeIds.Organizes,
-                    RequestedNodeId = new NodeId("Machine2", DefaultNamespaceIndex),
-                    BrowseName = new QualifiedName("Machine2", DefaultNamespaceIndex),
+                    RequestedNodeId = new NodeId("MachineInstance", DefaultNamespaceIndex),
+                    BrowseName = new QualifiedName("MachineInstance", DefaultNamespaceIndex),
                     TypeDefinitionId = ObjectTypeIds.UnitType.ToNodeId(Server.NamespaceUris)
                 };
                 node = CreateObject(Server.DefaultRequestContext, settings);
 
                 // Link model to node
-                UnitModel model2 = new UnitModel();
-                model2.UpdateState(model2, 1);
-                LinkModelToNode(node.NodeId, model2, null, null, 500);
+                UnitModel MachineInstanceModel = new UnitModel();
+                MachineInstanceModel.UpdateState(MachineInstanceModel, 1);
+                LinkModelToNode(node.NodeId, MachineInstanceModel, null, null, 500);
+                */
 
                 DBManager db = new DBManager();
-                db.CreateDB();
-                db.Initialize();
+                if(!File.Exists("PackMLSavedDB.db"))
+                {
+                    db.CreateDB();
+                    db.Initialize();
+                }
             }
             catch (Exception e)
             {
@@ -158,4 +164,3 @@ namespace FIP.PackMLStateMachine
         #endregion
     }
 }
-
